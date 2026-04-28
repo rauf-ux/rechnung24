@@ -72,15 +72,24 @@
     .footer-brand p { font-size: 13px; color: #737373; margin-top: 8px; max-width: 280px; }
     .footer-bottom { padding-top: 24px; border-top: 1px solid #F5F5F5; text-align: center; color: #A3A3A3; font-size: 13px; }
 
+/* Tablet */
+    @media (max-width: 1024px) {
+      .faq-layout { grid-template-columns: 1fr; gap: 32px; max-width: 720px; }
+      .faq-sidebar { position: static; }
+      .sidebar-nav { display: flex; gap: 8px; flex-wrap: wrap; }
+      .sidebar-nav a { padding: 10px 16px; background: white; border: 1px solid #E5E5E5; white-space: nowrap; font-size: 13px; }
+      .sidebar-title { padding-left: 0; margin-bottom: 12px; }
+    }
+
     /* Mobile */
     @media (max-width: 768px) {
       .page-header h1 { font-size: 32px; }
-      .faq-layout { grid-template-columns: 1fr; gap: 24px; }
-      .faq-sidebar { position: static; }
-      .sidebar-nav { display: flex; gap: 8px; flex-wrap: wrap; }
-      .sidebar-nav a { padding: 8px 12px; background: white; border: 1px solid #E5E5E5; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .nav-links a:not(.nav-cta) { display: none; }
+      .category-header h2 { font-size: 18px; }
+      .faq-item { padding: 20px 22px; }
+      .faq-item h3 { font-size: 15px; }
+      .contact-box { padding: 32px 24px; }
     }
   </style>
 </head>
