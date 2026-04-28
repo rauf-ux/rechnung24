@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impressum &amp; Datenschutz — Rechnung24</title>
+  <meta name="description" content="Impressum, Datenschutzerklärung und AGB von Rechnung24.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    body { font-family: 'Inter', -apple-system, system-ui, sans-serif; background: #FAFAFA; color: #0A0A0B; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    nav { padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+    .logo-icon { width: 28px; height: 28px; background: #0A0A0B; border-radius: 8px; color: white; text-align: center; line-height: 28px; font-weight: 700; font-size: 14px; }
+    .nav-links { display: flex; gap: 4px; align-items: center; }
+    .nav-links a { padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #525252; transition: all 0.15s; }
+    .nav-links a:hover { background: white; color: #0A0A0B; }
+    .nav-cta { background: #0A0A0B !important; color: white !important; margin-left: 8px; }
+    .nav-cta:hover { background: #262626 !important; }
+
+    /* Page Header */
+    .page-header { padding: 60px 0 40px; text-align: center; }
+    .page-header h1 { font-size: 40px; font-weight: 600; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 16px; }
+    .page-header p { font-size: 16px; color: #737373; }
+
+    /* Layout */
+    .legal-layout { display: grid; grid-template-columns: 220px 1fr; gap: 48px; padding: 20px 0 80px; max-width: 980px; margin: 0 auto; }
+
+    /* Sidebar */
+    .legal-sidebar { position: sticky; top: 24px; align-self: start; }
+    .sidebar-title { font-size: 12px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; padding-left: 12px; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+    .sidebar-nav a { display: block; padding: 8px 12px; font-size: 14px; color: #525252; border-radius: 8px; transition: all 0.15s; }
+    .sidebar-nav a:hover { background: white; color: #0A0A0B; }
+
+    /* Content */
+    .legal-content { min-width: 0; }
+    .legal-section { background: white; border: 1px solid #E5E5E5; border-radius: 16px; padding: 40px; margin-bottom: 24px; scroll-margin-top: 24px; }
+    .legal-section h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #F5F5F5; }
+    .legal-section h3 { font-size: 16px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; color: #0A0A0B; }
+    .legal-section h3:first-child { margin-top: 0; }
+    .legal-section p { font-size: 14px; color: #525252; line-height: 1.7; margin-bottom: 12px; }
+    .legal-section strong { color: #0A0A0B; font-weight: 600; }
+    .legal-section ul { margin-left: 20px; margin-bottom: 12px; }
+    .legal-section li { font-size: 14px; color: #525252; line-height: 1.7; margin-bottom: 4px; }
+    .legal-section a { color: #4F46E5; text-decoration: underline; text-decoration-color: #C7D2FE; }
+    .info-block { background: #FAFAFA; border-radius: 10px; padding: 20px; margin: 16px 0; font-size: 14px; line-height: 1.8; color: #404040; }
+    .info-block strong { display: block; margin-bottom: 4px; }
+
+    /* Footer */
+    footer { padding: 40px 0; border-top: 1px solid #E5E5E5; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+    .footer-col h4 { font-size: 13px; font-weight: 600; margin-bottom: 12px; color: #0A0A0B; }
+    .footer-col a { display: block; padding: 4px 0; font-size: 14px; color: #737373; }
+    .footer-col a:hover { color: #0A0A0B; }
+    .footer-brand p { font-size: 13px; color: #737373; margin-top: 8px; max-width: 280px; }
+    .footer-bottom { padding-top: 24px; border-top: 1px solid #F5F5F5; text-align: center; color: #A3A3A3; font-size: 13px; }
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .legal-layout { grid-template-columns: 1fr; gap: 24px; max-width: 720px; }
+      .legal-sidebar { position: static; padding-bottom: 16px; border-bottom: 1px solid #E5E5E5; }
+      .sidebar-title { padding-left: 0; }
+      .sidebar-nav { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+      .sidebar-nav a { padding: 8px 14px; background: white; border: 1px solid #E5E5E5; font-size: 13px; }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .page-header h1 { font-size: 28px; }
+      .legal-section { padding: 28px 24px; }
+      .legal-section h2 { font-size: 20px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links a:not(.nav-cta) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <nav>
+      <a href="/" class="logo">
+        <span class="logo-icon">R</span>
+        Rechnung24
+      </a>
+      <div class="nav-links">
+        <a href="/features.html">Features</a>
+        <a href="/pricing.html">Preise</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/pricing.html" class="nav-cta">Kostenlos starten</a>
+      </div>
+    </nav>
+
+    <section class="page-header">
+      <h1>Rechtliches</h1>
+      <p>Impressum, Datenschutz und Allgemeine Geschäftsbedingungen.</p>
+    </section>
+
+    <section class="legal-layout">
+
+      <aside class="legal-sidebar">
+        <div class="sidebar-title">Inhalt</div>
+        <nav class="sidebar-nav">
+          <a href="#impressum">Impressum</a>
+          <a href="#datenschutz">Datenschutz</a>
+          <a href="#agb">AGB</a>
+        </nav>
+      </aside>
+
+      <div class="legal-content">
+
+        <!-- IMPRESSUM -->
+        <div class="legal-section" id="impressum">
+          <h2>Impressum</h2>
+
+          <h3>Angaben gemäß § 5 TMG</h3>
+          <div class="info-block">
+            <strong>Rauf [Soyad]</strong>
+            [Straße und Hausnummer]<br>
+            [PLZ] Geisenfeld<br>
+            Deutschland
+          </div>
+
+          <h3>Kontakt</h3>
+          <div class="info-block">
+            <strong>E-Mail:</strong> hallo@rechnung24.de<br>
+            <strong>Telefon:</strong> [optional, kann leer bleiben]
+          </div>
+
+          <h3>Umsatzsteuer-Identifikationsnummer</h3>
+          <p>Gemäß § 27a Umsatzsteuergesetz: [DE-Nummer einfügen, falls vorhanden]</p>
+
+          <h3>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h3>
+          <p>Rauf [Soyad]<br>[Adresse wie oben]</p>
+
+          <h3>Streitschlichtung</h3>
+          <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank">https://ec.europa.eu/consumers/odr/</a></p>
+          <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+
+          <h3>Haftung für Inhalte</h3>
+          <p>Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen.</p>
+
+          <h3>Haftung für Links</h3>
+          <p>Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.</p>
+
+          <h3>Urheberrecht</h3>
+          <p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+        </div>
+
+        <!-- DATENSCHUTZ -->
+        <div class="legal-section" id="datenschutz">
+          <h2>Datenschutzerklärung</h2>
+
+          <h3>1. Datenschutz auf einen Blick</h3>
+          <p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit deinen personenbezogenen Daten passiert, wenn du diese Website besuchst.</p>
+
+          <h3>2. Verantwortliche Stelle</h3>
+          <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
+          <div class="info-block">
+            Rauf [Soyad]<br>
+            [Adresse]<br>
+            E-Mail: hallo@rechnung24.de
+          </div>
+
+          <h3>3. Welche Daten erfassen wir?</h3>
+          <p><strong>Beim Besuch der Website:</strong></p>
+          <ul>
+            <li>IP-Adresse (anonymisiert nach 7 Tagen)</li>
+            <li>Datum und Uhrzeit der Anfrage</li>
+            <li>Browser-Typ und -Version</li>
+            <li>Betriebssystem</li>
+            <li>Aufgerufene Seiten</li>
+          </ul>
+          <p>Diese Daten werden ausschließlich zur statistischen Auswertung und zur Verbesserung der Website verwendet.</p>
+
+          <p><strong>Bei Registrierung (zukünftig):</strong></p>
+          <ul>
+            <li>Name und E-Mail-Adresse</li>
+            <li>Firmendaten (Adresse, Steuernummer)</li>
+            <li>Rechnungsdaten (Kunden, Beträge)</li>
+            <li>Bankverbindung (IBAN)</li>
+          </ul>
+
+          <h3>4. Hosting</h3>
+          <p>Diese Website wird gehostet bei <strong>Vercel Inc.</strong> Server-Standort: Frankfurt, Deutschland.</p>
+          <p>Die zukünftige Datenbank wird bei <strong>Supabase</strong> gespeichert (EU-Server, DSGVO-konform).</p>
+
+          <h3>5. Cookies</h3>
+          <p>Diese Website verwendet aktuell <strong>keine Cookies</strong> und kein Tracking. Bei zukünftiger Erweiterung werden wir dich vorher um Einwilligung bitten.</p>
+
+          <h3>6. Deine Rechte (Art. 15-22 DSGVO)</h3>
+          <p>Du hast jederzeit das Recht auf:</p>
+          <ul>
+            <li>Auskunft über deine gespeicherten Daten</li>
+            <li>Berichtigung unrichtiger Daten</li>
+            <li>Löschung deiner Daten</li>
+            <li>Einschränkung der Verarbeitung</li>
+            <li>Datenübertragbarkeit</li>
+            <li>Widerspruch gegen die Verarbeitung</li>
+            <li>Beschwerde bei einer Aufsichtsbehörde</li>
+          </ul>
+          <p>Wende dich bei Fragen jederzeit an: <a href="mailto:hallo@rechnung24.de">hallo@rechnung24.de</a></p>
+
+          <h3>7. SSL-Verschlüsselung</h3>
+          <p>Diese Website nutzt aus Gründen der Sicherheit eine SSL-Verschlüsselung. Du erkennst dies am "https://" in der Adresszeile deines Browsers.</p>
+
+          <h3>8. Aktualität dieser Erklärung</h3>
+          <p>Diese Datenschutzerklärung wurde zuletzt am 28. April 2026 aktualisiert. Bei Änderungen werden wir dies hier dokumentieren.</p>
+        </div>
+
+        <!-- AGB -->
+        <div class="legal-section" id="agb">
+          <h2>Allgemeine Geschäftsbedingungen (AGB)</h2>
+
+          <h3>§ 1 Geltungsbereich</h3>
+          <p>Diese AGB gelten für alle Verträge zwischen Rechnung24 (nachfolgend "Anbieter") und Kunden, die die Software-as-a-Service-Lösung Rechnung24 nutzen.</p>
+
+          <h3>§ 2 Vertragsgegenstand</h3>
+          <p>Der Anbieter stellt dem Kunden eine webbasierte Software zur Erstellung, Versendung und Archivierung von Rechnungen zur Verfügung.</p>
+
+          <h3>§ 3 Vertragsabschluss</h3>
+          <p>Der Vertrag kommt durch die Online-Registrierung des Kunden zustande. Der Kunde erhält per E-Mail eine Bestätigung.</p>
+
+          <h3>§ 4 Testphase</h3>
+          <p>Die ersten 14 Tage nach Registrierung sind kostenlos. Innerhalb dieser Zeit kann der Vertrag jederzeit ohne Angabe von Gründen beendet werden.</p>
+
+          <h3>§ 5 Preise und Zahlung</h3>
+          <ul>
+            <li><strong>Starter:</strong> 9,90 € / Monat (netto)</li>
+            <li><strong>Pro:</strong> 19,90 € / Monat (netto)</li>
+          </ul>
+          <p>Die Abrechnung erfolgt monatlich oder jährlich im Voraus.</p>
+
+          <h3>§ 6 Kündigung</h3>
+          <p>Der Kunde kann den Vertrag jederzeit zum Ende des laufenden Abrechnungszeitraums kündigen. Die Kündigung erfolgt direkt in den Kontoeinstellungen.</p>
+
+          <h3>§ 7 Datenexport</h3>
+          <p>Der Kunde kann jederzeit alle seine Daten als PDF und XML exportieren. Nach Vertragsende stehen die Daten 30 Tage zum Export bereit, danach werden sie gelöscht.</p>
+
+          <h3>§ 8 Haftung</h3>
+          <p>Der Anbieter haftet nur für Vorsatz und grobe Fahrlässigkeit. Die Haftung ist auf den vom Kunden gezahlten Jahresbetrag begrenzt.</p>
+
+          <h3>§ 9 Verfügbarkeit</h3>
+          <p>Der Anbieter strebt eine Verfügbarkeit von 99,5 % im Jahresmittel an. Wartungsarbeiten werden rechtzeitig angekündigt.</p>
+
+          <h3>§ 10 Schlussbestimmungen</h3>
+          <p>Es gilt deutsches Recht. Gerichtsstand ist [Geisenfeld/München]. Sollten einzelne Bestimmungen unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.</p>
+
+          <p style="margin-top: 24px; font-size: 13px; color: #A3A3A3;"><em>Stand: 28. April 2026</em></p>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="logo">
+            <span class="logo-icon">R</span>
+            Rechnung24
+          </div>
+          <p>Die einfachste Rechnungs-App für deutsche Freelancer und Kleinunternehmer.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Produkt</h4>
+          <a href="/features.html">Features</a>
+          <a href="/pricing.html">Preise</a>
+          <a href="/faq.html">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4>Unternehmen</h4>
+          <a href="/impressum.html">Impressum</a>
+          <a href="/impressum.html">Datenschutz</a>
+        </div>
+        <div class="footer-col">
+          <h4>Kontakt</h4>
+          <a href="mailto:hallo@rechnung24.de">hallo@rechnung24.de</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 Rechnung24 · Made in Germany
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
