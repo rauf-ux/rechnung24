@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preise — Rechnung24</title>
+  <meta name="description" content="Einfache, faire Preise. Starter ab 9,90 €/Monat. 14 Tage kostenlos testen, jederzeit kündbar.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    body { font-family: 'Inter', -apple-system, system-ui, sans-serif; background: #FAFAFA; color: #0A0A0B; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    nav { padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+    .logo-icon { width: 28px; height: 28px; background: #0A0A0B; border-radius: 8px; color: white; text-align: center; line-height: 28px; font-weight: 700; font-size: 14px; }
+    .nav-links { display: flex; gap: 4px; align-items: center; }
+    .nav-links a { padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #525252; transition: all 0.15s; }
+    .nav-links a:hover { background: white; color: #0A0A0B; }
+    .nav-links a.active { color: #0A0A0B; background: white; }
+    .nav-cta { background: #0A0A0B !important; color: white !important; margin-left: 8px; }
+    .nav-cta:hover { background: #262626 !important; }
+
+    /* Page Header */
+    .page-header { padding: 60px 0 40px; text-align: center; }
+    .page-header .badge { display: inline-block; padding: 6px 14px; background: #DCFCE7; color: #15803D; font-size: 13px; font-weight: 500; border-radius: 20px; margin-bottom: 24px; }
+    .page-header h1 { font-size: 48px; font-weight: 600; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 16px; max-width: 720px; margin-left: auto; margin-right: auto; }
+    .page-header .subtitle { font-size: 18px; color: #525252; max-width: 600px; margin: 0 auto 32px; line-height: 1.6; }
+
+    /* Billing Toggle */
+    .billing-toggle { display: inline-flex; background: white; border: 1px solid #E5E5E5; padding: 4px; border-radius: 12px; margin-bottom: 48px; }
+    .billing-toggle button { background: none; border: none; padding: 10px 20px; font-size: 14px; font-weight: 500; color: #737373; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .billing-toggle button.active { background: #0A0A0B; color: white; }
+    .billing-toggle .save-badge { background: #DCFCE7; color: #15803D; font-size: 11px; padding: 2px 8px; border-radius: 8px; margin-left: 6px; font-weight: 600; }
+
+    /* Pricing Cards */
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 800px; margin: 0 auto 80px; }
+    .pricing-card { background: white; border: 1px solid #E5E5E5; border-radius: 20px; padding: 40px 32px; position: relative; }
+    .pricing-card.featured { border: 2px solid #0A0A0B; box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+    .featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #0A0A0B; color: white; font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .plan-name { font-size: 14px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .plan-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
+    .plan-price .amount { font-size: 48px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+    .plan-price .period { font-size: 15px; color: #737373; font-weight: 500; }
+    .plan-tagline { font-size: 14px; color: #737373; margin-bottom: 28px; }
+    .plan-cta { display: block; width: 100%; padding: 14px; border-radius: 10px; text-align: center; font-size: 15px; font-weight: 500; margin-bottom: 28px; transition: all 0.15s; }
+    .plan-cta.primary { background: #0A0A0B; color: white; }
+    .plan-cta.primary:hover { background: #262626; }
+    .plan-cta.secondary { background: white; color: #0A0A0B; border: 1px solid #E5E5E5; }
+    .plan-cta.secondary:hover { border-color: #0A0A0B; }
+    .plan-features { list-style: none; padding-top: 24px; border-top: 1px solid #F5F5F5; }
+    .plan-features li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; font-size: 14px; color: #404040; line-height: 1.5; }
+    .plan-features li:before { content: '✓'; color: #16A34A; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+    .plan-features li.highlight { font-weight: 600; color: #0A0A0B; }
+
+    /* Comparison */
+    .comparison { background: white; border-radius: 24px; padding: 60px 40px; margin-bottom: 80px; }
+    .comparison-header { text-align: center; margin-bottom: 40px; }
+    .comparison-header h2 { font-size: 32px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .comparison-header p { font-size: 16px; color: #525252; }
+    .comparison-table { width: 100%; border-collapse: collapse; }
+    .comparison-table th, .comparison-table td { padding: 16px 12px; text-align: left; border-bottom: 1px solid #F5F5F5; font-size: 14px; }
+    .comparison-table th { font-weight: 600; color: #737373; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .comparison-table th.col-feature { width: 40%; }
+    .comparison-table th.col-plan, .comparison-table td.col-plan { text-align: center; width: 20%; }
+    .comparison-table td.feature-name { font-weight: 500; color: #0A0A0B; }
+    .comparison-table .check { color: #16A34A; font-size: 18px; font-weight: 700; }
+    .comparison-table .dash { color: #C7C7C7; font-size: 18px; }
+    .comparison-table .text-value { font-weight: 500; color: #404040; }
+
+    /* FAQ */
+    .faq-section { padding: 60px 0 80px; }
+    .faq-header { text-align: center; margin-bottom: 48px; }
+    .faq-header h2 { font-size: 32px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .faq-header p { font-size: 16px; color: #525252; }
+    .faq-list { max-width: 720px; margin: 0 auto; }
+    .faq-item { background: white; border: 1px solid #E5E5E5; border-radius: 12px; padding: 24px 28px; margin-bottom: 12px; }
+    .faq-item h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: #0A0A0B; }
+    .faq-item p { font-size: 14px; color: #525252; line-height: 1.6; }
+
+    /* CTA */
+    .cta-section { background: #0A0A0B; color: white; padding: 80px 24px; text-align: center; border-radius: 24px; margin-bottom: 60px; }
+    .cta-section h2 { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .cta-section p { color: #A3A3A3; font-size: 16px; margin-bottom: 32px; }
+    .btn-white { background: white; color: #0A0A0B; padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 500; display: inline-block; }
+
+    /* Footer */
+    footer { padding: 40px 0; border-top: 1px solid #E5E5E5; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+    .footer-col h4 { font-size: 13px; font-weight: 600; margin-bottom: 12px; color: #0A0A0B; }
+    .footer-col a { display: block; padding: 4px 0; font-size: 14px; color: #737373; }
+    .footer-col a:hover { color: #0A0A0B; }
+    .footer-brand p { font-size: 13px; color: #737373; margin-top: 8px; max-width: 280px; }
+    .footer-bottom { padding-top: 24px; border-top: 1px solid #F5F5F5; text-align: center; color: #A3A3A3; font-size: 13px; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .page-header h1 { font-size: 32px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .comparison { padding: 40px 20px; }
+      .comparison-table th, .comparison-table td { padding: 12px 6px; font-size: 13px; }
+      .cta-section h2 { font-size: 28px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links a:not(.nav-cta) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <nav>
+      <a href="/" class="logo">
+        <span class="logo-icon">R</span>
+        Rechnung24
+      </a>
+      <div class="nav-links">
+        <a href="/features.html">Features</a>
+        <a href="/pricing.html" class="active">Preise</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/pricing.html" class="nav-cta">Kostenlos starten</a>
+      </div>
+    </nav>
+
+    <section class="page-header">
+      <span class="badge">💰 14 Tage kostenlos testen</span>
+      <h1>Einfache, faire Preise.</h1>
+      <p class="subtitle">
+        Keine versteckten Kosten. Jederzeit kündbar. 
+        Bezahle nur, wenn dir Rechnung24 wirklich hilft.
+      </p>
+
+      <div class="billing-toggle">
+        <button class="active">Monatlich</button>
+        <button>Jährlich <span class="save-badge">−20%</span></button>
+      </div>
+    </section>
+
+    <section>
+      <div class="pricing-grid">
+
+        <div class="pricing-card">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price">
+            <span class="amount">9,90 €</span>
+            <span class="period">/ Monat</span>
+          </div>
+          <p class="plan-tagline">Perfekt für Freelancer und Einzelunternehmer.</p>
+          <a href="#" class="plan-cta secondary">Kostenlos starten</a>
+          <ul class="plan-features">
+            <li class="highlight">Bis zu 25 Rechnungen / Monat</li>
+            <li>XRechnung-konformer Export</li>
+            <li>PDF-Erstellung &amp; E-Mail-Versand</li>
+            <li>Kundenverwaltung</li>
+            <li>GoBD-konforme Archivierung</li>
+            <li>Mobile-optimiert</li>
+            <li>E-Mail-Support</li>
+          </ul>
+        </div>
+
+        <div class="pricing-card featured">
+          <span class="featured-badge">⭐ Beliebt</span>
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">
+            <span class="amount">19,90 €</span>
+            <span class="period">/ Monat</span>
+          </div>
+          <p class="plan-tagline">Für wachsende Unternehmen mit mehr Bedarf.</p>
+          <a href="#" class="plan-cta primary">Kostenlos starten</a>
+          <ul class="plan-features">
+            <li class="highlight">Unbegrenzte Rechnungen</li>
+            <li>Alles aus Starter</li>
+            <li>Wiederkehrende Rechnungen</li>
+            <li>Mahnwesen automatisch</li>
+            <li>DATEV-Export für Steuerberater</li>
+            <li>Mehrsprachige Rechnungen (DE/EN)</li>
+            <li>Umsatz-Dashboard</li>
+            <li>Prioritäts-Support</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="comparison">
+      <div class="comparison-header">
+        <h2>Funktionen im Detail</h2>
+        <p>Vergleiche Starter und Pro auf einen Blick.</p>
+      </div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th class="col-feature">Funktion</th>
+            <th class="col-plan">Starter</th>
+            <th class="col-plan">Pro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="feature-name">Rechnungen pro Monat</td>
+            <td class="col-plan text-value">25</td>
+            <td class="col-plan text-value">Unbegrenzt</td>
+          </tr>
+          <tr>
+            <td class="feature-name">XRechnung-Export</td>
+            <td class="col-plan"><span class="check">✓</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">PDF-Erstellung</td>
+            <td class="col-plan"><span class="check">✓</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">E-Mail-Versand</td>
+            <td class="col-plan"><span class="check">✓</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">Kundenverwaltung</td>
+            <td class="col-plan"><span class="check">✓</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">GoBD-Archivierung</td>
+            <td class="col-plan"><span class="check">✓</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">Wiederkehrende Rechnungen</td>
+            <td class="col-plan"><span class="dash">–</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">Automatisches Mahnwesen</td>
+            <td class="col-plan"><span class="dash">–</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">DATEV-Export</td>
+            <td class="col-plan"><span class="dash">–</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">Mehrsprachige Rechnungen</td>
+            <td class="col-plan"><span class="dash">–</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">Umsatz-Dashboard</td>
+            <td class="col-plan"><span class="dash">–</span></td>
+            <td class="col-plan"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name">Support</td>
+            <td class="col-plan text-value">E-Mail</td>
+            <td class="col-plan text-value">Priorität</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="faq-section">
+      <div class="faq-header">
+        <h2>Fragen zu den Preisen</h2>
+        <p>Hier findest du Antworten auf häufige Fragen.</p>
+      </div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <h3>Kann ich kostenlos testen?</h3>
+          <p>Ja. Du kannst Rechnung24 14 Tage lang vollständig kostenlos und ohne Kreditkarte testen. Keine automatische Verlängerung.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Wie kann ich kündigen?</h3>
+          <p>Mit einem Klick in den Einstellungen — jederzeit zum Monatsende. Keine Kündigungsfristen, keine versteckten Klauseln.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Was passiert mit meinen Daten nach der Kündigung?</h3>
+          <p>Alle deine Rechnungen kannst du jederzeit als PDF und XML exportieren. Nach der Kündigung bleiben deine Daten 30 Tage verfügbar, danach werden sie DSGVO-konform gelöscht.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Sind die Preise inkl. MwSt?</h3>
+          <p>Die angezeigten Preise sind Netto-Preise. Auf der Rechnung kommen 19% MwSt hinzu (für Geschäftskunden zur vollständigen Vorsteuer-Erstattung).</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Kann ich zwischen Starter und Pro wechseln?</h3>
+          <p>Ja, jederzeit. Beim Upgrade wird der Differenzbetrag anteilig berechnet. Beim Downgrade gilt der neue Preis ab dem nächsten Monat.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Gibt es einen Rabatt für Jahres-Abos?</h3>
+          <p>Ja. Bei jährlicher Zahlung sparst du 20% — das entspricht 2 Monaten gratis. Du kannst auch hier jederzeit kündigen.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Was ist, wenn ich mehr als 25 Rechnungen brauche?</h3>
+          <p>Dann ist der Pro-Plan für dich richtig — mit unbegrenzten Rechnungen für nur 19,90 €/Monat. Jederzeit upgrade-bar.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Wer ist Rechnung24 für?</h3>
+          <p>Freelancer, Solo-Selbstständige, Kleinunternehmer und kleine Handwerksbetriebe in Deutschland. Wenn du monatlich 1–100 Rechnungen schreibst, bist du bei uns richtig.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Starte heute. Kostenlos.</h2>
+      <p>14 Tage testen · Keine Kreditkarte erforderlich · Jederzeit kündbar</p>
+      <a href="#" class="btn-white">Jetzt loslegen →</a>
+    </section>
+
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="logo">
+            <span class="logo-icon">R</span>
+            Rechnung24
+          </div>
+          <p>Die einfachste Rechnungs-App für deutsche Freelancer und Kleinunternehmer.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Produkt</h4>
+          <a href="/features.html">Features</a>
+          <a href="/pricing.html">Preise</a>
+          <a href="/faq.html">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4>Unternehmen</h4>
+          <a href="/impressum.html">Impressum</a>
+          <a href="/impressum.html">Datenschutz</a>
+        </div>
+        <div class="footer-col">
+          <h4>Kontakt</h4>
+          <a href="mailto:hallo@rechnung24.de">hallo@rechnung24.de</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 Rechnung24 · Made in Germany
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
