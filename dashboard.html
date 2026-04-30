@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Rechnung24</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    body { font-family: 'Inter', -apple-system, system-ui, sans-serif; background: #FAFAFA; color: #0A0A0B; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+
+    .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar { background: white; border-right: 1px solid #E5E5E5; padding: 20px 16px; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+    .sidebar-logo { display: flex; align-items: center; gap: 8px; padding: 8px 12px; margin-bottom: 24px; }
+    .logo-icon { width: 28px; height: 28px; background: #0A0A0B; border-radius: 8px; color: white; text-align: center; line-height: 28px; font-weight: 700; font-size: 14px; }
+    .sidebar-logo span:last-child { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+
+    .nav-section { margin-bottom: 24px; }
+    .nav-label { font-size: 11px; color: #A3A3A3; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; padding: 0 12px; margin-bottom: 8px; }
+    .nav-link { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; font-size: 14px; color: #525252; font-weight: 500; transition: all 0.15s; margin-bottom: 2px; }
+    .nav-link:hover { background: #FAFAFA; color: #0A0A0B; }
+    .nav-link.active { background: #0A0A0B; color: white; }
+    .nav-icon { width: 18px; text-align: center; font-size: 16px; }
+
+    .sidebar-footer { margin-top: auto; padding: 12px; border-top: 1px solid #F5F5F5; }
+    .user-card { display: flex; align-items: center; gap: 10px; padding: 4px; }
+    .user-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, #0A0A0B, #525252); border-radius: 8px; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0; }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-size: 13px; font-weight: 500; color: #0A0A0B; }
+    .user-plan { font-size: 11px; color: #737373; }
+    .user-menu { color: #A3A3A3; font-size: 16px; padding: 4px; }
+
+    /* Main */
+    .main { padding: 32px 40px 80px; }
+    .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+    .page-title { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .page-sub { font-size: 14px; color: #737373; }
+    .btn-primary { background: #0A0A0B; color: white; padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; }
+    .btn-primary:hover { background: #262626; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: white; border: 1px solid #E5E5E5; border-radius: 14px; padding: 20px; }
+    .stat-label { font-size: 13px; color: #737373; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .stat-icon { width: 24px; height: 24px; background: #FAFAFA; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; }
+    .stat-value { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; font-family: 'JetBrains Mono', monospace; line-height: 1.2; margin-bottom: 4px; }
+    .stat-change { font-size: 12px; color: #16A34A; font-weight: 500; }
+    .stat-change.neutral { color: #737373; }
+
+    /* Section */
+    .section { background: white; border: 1px solid #E5E5E5; border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
+    .section-header { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F5F5F5; }
+    .section-title { font-size: 15px; font-weight: 600; }
+    .section-link { font-size: 13px; color: #0A0A0B; font-weight: 500; }
+
+    /* Invoice list */
+    .invoice-row { padding: 16px 24px; display: grid; grid-template-columns: 100px 1fr 100px 120px 100px; gap: 16px; align-items: center; border-bottom: 1px solid #F5F5F5; transition: background 0.15s; }
+    .invoice-row:last-child { border-bottom: none; }
+    .invoice-row:hover { background: #FAFAFA; }
+    .invoice-num { font-size: 12px; color: #737373; font-family: 'JetBrains Mono', monospace; }
+    .invoice-client { font-size: 14px; font-weight: 500; }
+    .invoice-date { font-size: 13px; color: #737373; }
+    .invoice-amount { font-size: 14px; font-weight: 600; font-family: 'JetBrains Mono', monospace; text-align: right; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; text-align: center; }
+    .badge.green { background: #DCFCE7; color: #15803D; }
+    .badge.blue { background: #DBEAFE; color: #1D4ED8; }
+    .badge.amber { background: #FEF3C7; color: #B45309; }
+    .badge.red { background: #FEE2E2; color: #B91C1C; }
+
+    /* Tip card */
+    .tip-card { background: #FAFAFA; border: 1px solid #E5E5E5; border-radius: 14px; padding: 24px; display: flex; align-items: flex-start; gap: 16px; }
+    .tip-icon { width: 40px; height: 40px; background: #0A0A0B; border-radius: 10px; color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .tip-content { flex: 1; }
+    .tip-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .tip-desc { font-size: 13px; color: #737373; line-height: 1.5; margin-bottom: 12px; }
+    .tip-link { font-size: 13px; font-weight: 500; color: #0A0A0B; }
+
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; flex-direction: row; padding: 12px; align-items: center; }
+      .sidebar-logo { margin-bottom: 0; }
+      .nav-section { display: none; }
+      .sidebar-footer { margin-top: 0; margin-left: auto; padding: 0; border: none; }
+      .main { padding: 24px 20px; }
+      .stats { grid-template-columns: 1fr; }
+      .invoice-row { grid-template-columns: 1fr; gap: 6px; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <a href="/" class="sidebar-logo">
+        <span class="logo-icon">R</span>
+        <span>Rechnung24</span>
+      </a>
+
+      <div class="nav-section">
+        <div class="nav-label">Hauptmenü</div>
+        <a href="/dashboard.html" class="nav-link active">
+          <span class="nav-icon">⌂</span>
+          Dashboard
+        </a>
+        <a href="/invoices.html" class="nav-link">
+          <span class="nav-icon">📄</span>
+          Rechnungen
+        </a>
+        <a href="/clients.html" class="nav-link">
+          <span class="nav-icon">👥</span>
+          Kunden
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Account</div>
+        <a href="/settings.html" class="nav-link">
+          <span class="nav-icon">⚙</span>
+          Einstellungen
+        </a>
+        <a href="/login.html" class="nav-link">
+          <span class="nav-icon">→</span>
+          Abmelden
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">R</div>
+          <div class="user-info">
+            <div class="user-name">Rauf</div>
+            <div class="user-plan">Pro Plan</div>
+          </div>
+          <span class="user-menu">⋯</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Hallo, Rauf 👋</h1>
+          <p class="page-sub">Hier ist dein Überblick für April 2026.</p>
+        </div>
+        <a href="/invoice-new.html" class="btn-primary">+ Neue Rechnung</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">
+            <span class="stat-icon">€</span>
+            Umsatz diesen Monat
+          </div>
+          <div class="stat-value">4.520,00 €</div>
+          <div class="stat-change">↑ 23% vs. März</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">
+            <span class="stat-icon">⏰</span>
+            Offene Forderungen
+          </div>
+          <div class="stat-value">1.200,00 €</div>
+          <div class="stat-change neutral">3 Rechnungen</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">
+            <span class="stat-icon">✓</span>
+            Bezahlt
+          </div>
+          <div class="stat-value">8 / 10</div>
+          <div class="stat-change">80% Zahlungsquote</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Letzte Rechnungen</div>
+          <a href="/invoices.html" class="section-link">Alle ansehen →</a>
+        </div>
+
+        <div class="invoice-row">
+          <div class="invoice-num">#2026-008</div>
+          <div class="invoice-client">Müller GmbH</div>
+          <div class="invoice-date">27. April</div>
+          <div class="invoice-amount">850,00 €</div>
+          <div><span class="badge blue">Versendet</span></div>
+        </div>
+
+        <div class="invoice-row">
+          <div class="invoice-num">#2026-007</div>
+          <div class="invoice-client">Schmidt Bauunternehmen</div>
+          <div class="invoice-date">25. April</div>
+          <div class="invoice-amount">1.200,00 €</div>
+          <div><span class="badge green">Bezahlt</span></div>
+        </div>
+
+        <div class="invoice-row">
+          <div class="invoice-num">#2026-006</div>
+          <div class="invoice-client">Bauer Bau GmbH</div>
+          <div class="invoice-date">20. April</div>
+          <div class="invoice-amount">450,00 €</div>
+          <div><span class="badge red">Überfällig</span></div>
+        </div>
+
+        <div class="invoice-row">
+          <div class="invoice-num">#2026-005</div>
+          <div class="invoice-client">Weber AG</div>
+          <div class="invoice-date">18. April</div>
+          <div class="invoice-amount">2.100,00 €</div>
+          <div><span class="badge green">Bezahlt</span></div>
+        </div>
+
+        <div class="invoice-row">
+          <div class="invoice-num">#2026-004</div>
+          <div class="invoice-client">Klein Design</div>
+          <div class="invoice-date">15. April</div>
+          <div class="invoice-amount">320,00 €</div>
+          <div><span class="badge amber">Entwurf</span></div>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-icon">⚡</div>
+        <div class="tip-content">
+          <div class="tip-title">Bist du bereit für 2027?</div>
+          <div class="tip-desc">Ab 1. Januar 2027 ist E-Rechnung Pflicht. Prüfe deine XRechnung-Konformität.</div>
+          <a href="#" class="tip-link">Jetzt prüfen →</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>
