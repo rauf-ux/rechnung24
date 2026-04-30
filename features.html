@@ -23,6 +23,22 @@
     .nav-cta { background: #0A0A0B !important; color: white !important; margin-left: 8px; }
     .nav-cta:hover { background: #262626 !important; }
 
+    /* Hamburger */
+    .hamburger { display: none; width: 40px; height: 40px; border-radius: 8px; background: white; border: 1px solid #E5E5E5; cursor: pointer; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
+    .hamburger span { width: 18px; height: 2px; background: #0A0A0B; border-radius: 1px; transition: all 0.2s; }
+
+    /* Mobile menu */
+    .mobile-menu { display: none; position: fixed; top: 0; right: 0; width: 280px; height: 100vh; background: white; padding: 20px; box-shadow: -8px 0 24px rgba(0,0,0,0.08); z-index: 100; flex-direction: column; transform: translateX(100%); transition: transform 0.25s ease; }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-menu-header { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+    .mobile-menu-close { width: 36px; height: 36px; border-radius: 8px; background: #FAFAFA; border: none; cursor: pointer; font-size: 18px; color: #0A0A0B; display: flex; align-items: center; justify-content: center; }
+    .mobile-menu-links { display: flex; flex-direction: column; gap: 4px; }
+    .mobile-menu-links a { padding: 14px 16px; border-radius: 10px; font-size: 16px; font-weight: 500; color: #0A0A0B; }
+    .mobile-menu-links a:hover { background: #FAFAFA; }
+    .mobile-menu-links a.cta { background: #0A0A0B; color: white; text-align: center; margin-top: 8px; }
+    .mobile-menu-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99; }
+    .mobile-menu-backdrop.open { display: block; }
+
     /* Page Header */
     .page-header { padding: 60px 0 40px; text-align: center; }
     .page-header .badge { display: inline-block; padding: 6px 14px; background: #EEF2FF; color: #4338CA; font-size: 13px; font-weight: 500; border-radius: 20px; margin-bottom: 24px; }
@@ -43,19 +59,7 @@
     .feature-list li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; font-size: 14px; color: #404040; }
     .feature-list li:before { content: '✓'; color: #16A34A; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
 
-    .feature-visual {
-      background: white;
-      border: 1px solid #E5E5E5;
-      border-radius: 16px;
-      padding: 32px;
-      min-height: 320px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #A3A3A3;
-      font-size: 14px;
-      text-align: center;
-    }
+    .feature-visual { background: white; border: 1px solid #E5E5E5; border-radius: 16px; padding: 32px; min-height: 320px; display: flex; align-items: center; justify-content: center; color: #A3A3A3; font-size: 14px; text-align: center; }
 
     /* Functions Grid */
     .functions { padding: 80px 0; background: white; border-radius: 24px; margin: 60px 0; }
@@ -94,7 +98,9 @@
       .functions-grid { grid-template-columns: 1fr; }
       .cta-section h2 { font-size: 28px; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
-      .nav-links a:not(.nav-cta) { display: none; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .mobile-menu { display: flex; }
     }
   </style>
 </head>
@@ -112,9 +118,28 @@
         <a href="/pricing.html">Preise</a>
         <a href="/faq.html">FAQ</a>
         <a href="/login.html">Anmelden</a>
-        <a href="/pricing.html" class="nav-cta">Kostenlos starten</a>
+        <a href="/signup.html" class="nav-cta">Kostenlos starten</a>
       </div>
+      <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.add('open'); document.querySelector('.mobile-menu-backdrop').classList.add('open')">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </nav>
+
+    <div class="mobile-menu-backdrop" onclick="document.querySelector('.mobile-menu').classList.remove('open'); document.querySelector('.mobile-menu-backdrop').classList.remove('open')"></div>
+    <div class="mobile-menu">
+      <div class="mobile-menu-header">
+        <button class="mobile-menu-close" onclick="document.querySelector('.mobile-menu').classList.remove('open'); document.querySelector('.mobile-menu-backdrop').classList.remove('open')">✕</button>
+      </div>
+      <div class="mobile-menu-links">
+        <a href="/features.html">Features</a>
+        <a href="/pricing.html">Preise</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/login.html">Anmelden</a>
+        <a href="/signup.html" class="cta">Kostenlos starten</a>
+      </div>
+    </div>
 
     <section class="page-header">
       <span class="badge">⚡ Alle Funktionen im Überblick</span>
@@ -264,4 +289,40 @@
     <section class="cta-section">
       <h2>Bereit für moderne Rechnungen?</h2>
       <p>14 Tage kostenlos testen · Keine Kreditkarte erforderlich</p>
-      <a href="/pricing.html" class="btn-white">Jetzt lo
+      <a href="/signup.html" class="btn-white">Jetzt loslegen →</a>
+    </section>
+
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="logo">
+            <span class="logo-icon">R</span>
+            Rechnung24
+          </div>
+          <p>Die einfachste Rechnungs-App für deutsche Freelancer und Kleinunternehmer.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Produkt</h4>
+          <a href="/features.html">Features</a>
+          <a href="/pricing.html">Preise</a>
+          <a href="/faq.html">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4>Unternehmen</h4>
+          <a href="/impressum.html">Impressum</a>
+          <a href="/impressum.html">Datenschutz</a>
+        </div>
+        <div class="footer-col">
+          <h4>Kontakt</h4>
+          <a href="mailto:hallo@rechnung24.de">hallo@rechnung24.de</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 Rechnung24 · Made in Germany
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
