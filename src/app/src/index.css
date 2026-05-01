@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Klarbill theme — values are HSL components (without hsl(...) wrapper) so the
+ * shadcn semantic tokens in tailwind.config.js can compose them via
+ * `hsl(var(--foreground))`.
+ *
+ * Source palette (from existing static HTML):
+ *   #0A0A0B charcoal  → 240 9% 4%
+ *   #FAFAFA bg        → 0 0% 98%
+ *   #9e005d magenta   → 326 100% 31%
+ *   #525252 muted fg  → 0 0% 32%
+ *   #E5E5E5 border    → 0 0% 90%
+ */
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;            /* #FAFAFA */
+    --foreground: 240 9% 4%;           /* #0A0A0B */
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 9% 4%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 9% 4%;
+
+    --primary: 240 9% 4%;              /* charcoal — buttons, focus */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 326 100% 31%;         /* magenta — secondary CTAs, accents */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 96%;                 /* #F5F5F5 */
+    --muted-foreground: 0 0% 32%;      /* #525252 */
+
+    --accent: 0 0% 96%;
+    --accent-foreground: 240 9% 4%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;                /* #E5E5E5 */
+    --input: 0 0% 90%;
+    --ring: 240 9% 4%;
+
+    --radius: 10px;
+  }
+
+  * { @apply border-border; }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+}

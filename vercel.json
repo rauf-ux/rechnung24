@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+
+  "buildCommand": "cd src/app && npm install --no-audit --no-fund && npm run build",
+  "outputDirectory": ".",
+
+  "rewrites": [
+    { "source": "/app/:path*", "destination": "/app/index.html" }
+  ],
+
+  "cleanUrls": true,
+  "trailingSlash": false
+}

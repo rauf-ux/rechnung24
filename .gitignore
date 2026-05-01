@@ -9,12 +9,14 @@ node_modules/
 *.log
 .~lock.*
 
-# Vite build output for the invoice generator (regenerated on every Vercel deploy)
+# Vite build output for the SPA (regenerated on every Vercel deploy).
+# `/app/` is the live URL prefix — the build emits there via vite.config.ts.
+/app/
 /generator/
 
 # TypeScript build artifacts
 *.tsbuildinfo
-src/generator/vite.config.d.ts
-src/generator/vite.config.js
-src/generator/vite.config.js.timestamp-*
+src/app/vite.config.d.ts
+src/app/vite.config.js
+src/app/vite.config.js.timestamp-*
 .fuse_hidden*

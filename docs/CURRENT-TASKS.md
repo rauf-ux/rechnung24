@@ -14,26 +14,33 @@
 - ✅ **Brand copy:** all user-facing HTML now says "Klarbill" (Rechnung24 fully swept)
 - ✅ **Strategy locked:** Klarbill is a template tool (see `00-strategy.md`)
 - ✅ **Legal scaffolding:** `agb.html` + `datenschutz.html` drafted with template-tool framing. `impressum.html` trimmed (old contradictory privacy-policy section removed). Footer links updated site-wide. Lawyer review still pending — launch posture remains private beta.
-- ✅ **Generator scaffold:** Vite + React + TS at `src/generator/`. `npm run build` produces a 143 kB bundle (46 kB gzipped). Will be renamed `src/app/` and grown into the full `/app/*` SPA.
-- ✅ **Architecture refined:** marketing pages stay static HTML (7 files); everything behind login becomes a Vite-React SPA at `klarbill.de/app/*`. Generator scaffold is the seed of this SPA, not a one-off island. See `00-strategy.md` § Architecture decision.
+- ✅ **Architecture refined:** marketing pages stay static HTML (7 files); everything behind login becomes a Vite-React SPA at `klarbill.de/app/*`. See `00-strategy.md` § Architecture decision.
+- ✅ **`/app/*` SPA shell shipped.** `src/generator/` renamed to `src/app/`. 14 routes mount with placeholder content (login, signup, forgot, callback, welcome, done, onboarding/1-3, dashboard, invoices, invoices/new, clients, settings). Three layouts (AppLayout, AuthLayout, OnboardingLayout) + ProtectedRoute. Tailwind + shadcn/ui (Button, Input, Card). Build emits to `<repo>/app/`: ~221 KB JS (~69 KB gz), 14 KB CSS. `vercel.json` configured with `/app/*` rewrite.
+- ✅ **Mock auth in place.** `useSession()` returns `{ user: null }` by default; `?dev-user=1` URL param simulates a logged-in user for layout development.
 
-## Active (Phase 1 — App SPA + Generator)
+## Active (Phase 1 — Auth + Generator inside the SPA)
 
 Ordered by dependency.
 
-- [ ] **Build the `/app/*` SPA shell** — extend the Vite scaffold:
-  - Rename `src/generator/` → `src/app/`
-  - Add `react-router-dom` v6 with placeholder routes for login/signup/forgot/callback/onboarding/dashboard/invoices/clients/settings
-  - `<AppLayout>` (sidebar + topbar + outlet) and `<AuthLayout>` (centered card)
-  - `<ProtectedRoute>` wrapper (redirects to `/app/login` when no session — mock until auth is wired)
-  - Decide component primitive layer: shadcn/ui (Tailwind) vs. hand-rolled (matches existing CSS-in-files style)
-  - `vercel.json` at repo root with `/app/*` → `/app/index.html` rewrite
-- [ ] **Auth inside the SPA** — Supabase JS SDK, `useSession()` hook, real Supabase project provisioned, login/signup/forgot/callback routes wired
-- [ ] **Invoice generator forms** — extend scaffold's 4-step placeholder with real fields, §19 toggle, draft auto-save, jsPDF rendering, XRechnung XML serialization (UBL 2.1)
-- [ ] **`impressum.html` real legal data** — replace placeholders. Required before any public sign-up. **User's job — Claude can't supply real address data.**
-- [ ] **Marketing → app handoff** — `signup.html`, `login.html`, `welcome.html` etc. redirect to `/app/signup`, `/app/login`, `/app/welcome` (or get retired entirely)
-- [ ] **AGB + Datenschutz lawyer review** — find a German Fachanwalt für IT-Recht, hand them `agb.html` + `datenschutz.html` + `00-strategy.md`. Until then, no public sign-up.
-- [ ] **Pricing copy refresh** — update `pricing.html` once we pick freemium-with-cap vs. PAYG / one-time.
+- [ ] **Wire real Supabase auth into the SPA.**
+  - Provision a Supabase free-tier project (`klarbill` workspace, EU region)
+  - Run `db/schema.sql` to create `profiles` + `clients` tables with RLS
+  - Replace `useSession.ts` mock with real Supabase client (`@supabase/supabase-js`)
+  - Wire login/signup/forgot/callback route forms to `supabase.auth.*` methods
+  - Add Supabase URL + anon key to `src/app/src/auth/supabase.ts` (committed — anon key is public-safe)
+  - Test the full happy path: signup → email verify → login → dashboard
+- [ ] **Invoice generator inside the SPA.** Replace `src/app/src/routes/invoices/new.tsx` placeholder with the real multi-step form:
+  - `types.ts` (IssuerProfile, Recipient, LineItem, Invoice)
+  - 4-step flow (Absender → Empfänger → Positionen → Vorschau) using shadcn Card + Input + Button primitives
+  - §19 Kleinunternehmer toggle (zeros VAT, appends required notice)
+  - Draft auto-save to localStorage
+  - jsPDF rendering (Helvetica, A4 portrait)
+  - XRechnung XML serialization (UBL 2.1)
+- [ ] **Wire dashboard / clients / settings to real data** — fetch profile + clients from Supabase via the type-safe client.
+- [ ] **`impressum.html` real legal data** — replace placeholders ("Rauf [Nachname]", "Musterstraße 1", "85290 Geisenfeld", VAT-ID `[wird ergänzt]`). Required before any public sign-up. **User's job.**
+- [ ] **Marketing → SPA handoff** — once auth is live, redirect `signup.html` → `/app/signup`, `login.html` → `/app/login`, `welcome.html` → `/app/welcome` (or retire those static files entirely).
+- [ ] **AGB + Datenschutz lawyer review** — find a German Fachanwalt für IT-Recht.
+- [ ] **Pricing copy refresh** — update `pricing.html` once we pick freemium-with-cap vs. PAYG.
 - [ ] **`DEPLOY.md` brand cleanup** — Supabase config + email templates (at auth go-live).
 - [ ] **Rename GitHub repo `rechnung24` → `klarbill`** — then update `README.md` URLs.
 
@@ -92,6 +99,14 @@ Daily loop:
    (or `./deploy.sh "msg"` once that helper exists)
 3. Vercel auto-deploys → klarbill.de.
 
+## Last Session Summary (2026-05-01, late night — `/app/*` SPA shell)
+
+- **`/app/*` SPA shell shipped.** Renamed `src/generator/` → `src/app/`. 14 routes (login, signup, forgot, callback, welcome, done, onboarding/1-3, dashboard, invoices, invoices/new, clients, settings) all mount with realistic placeholder content using shadcn primitives. Three layouts: AppLayout (sidebar + topbar + mobile bottom nav), AuthLayout (centered card with footer linking to AGB/Datenschutz/Impressum), OnboardingLayout (focused single-card with 3-dot progress). ProtectedRoute wrapper redirects unauthed users to `/login?next=...`.
+- **Tailwind + shadcn/ui adopted.** `tailwind.config.js` maps Klarbill's existing palette (charcoal #0A0A0B, magenta #9e005d, bg #FAFAFA) onto shadcn's semantic CSS variables, so out-of-the-box shadcn components inherit the brand without per-component theming. Three primitives (Button, Input, Card) wired up. `cn()` helper from `lib/utils.ts`.
+- **Build verified.** `npm run build` produces 221 KB JS bundle (69 KB gzipped), 14 KB CSS (3.5 KB gzipped). Output goes to `<repo>/app/` (gitignored). `vercel.json` at repo root tells Vercel to run the build on deploy and rewrites `/app/*` URLs to `/app/index.html` for client-side routing.
+- **Mock auth ships with the shell.** `useSession()` returns `{ user: null, loading: false }` by default; `ProtectedRoute` redirects to `/login`. Append `?dev-user=1` to any URL during development to simulate a logged-in user and preview authed layouts. Real Supabase auth lands in the next session.
+- **Decisions deliberately deferred to later sessions:** form library (`react-hook-form` + `zod`), state library (`zustand`), PDF font embedding, XRechnung schema validation. Native React + Tailwind is sufficient until specific pain shows up.
+
 ## Last Session Summary (2026-05-01, night — architecture refinement)
 
 - **Architecture clarified, not pivoted.** Earlier framing said "static HTML for marketing, React island only for the invoice generator, defer Next.js." That left a vague middle: where does login go? Where does the dashboard live? This session sets a clear boundary: **marketing surface (7 pages) stays static HTML; everything behind login becomes a Vite-React SPA at `/app/*`**. The `src/generator/` scaffold is the seed of this SPA — it gets renamed to `src/app/`, gets `react-router-dom`, gets an `<AppLayout>`, and grows route-by-route.
@@ -111,15 +126,15 @@ Daily loop:
 
 ## Next Session — Start Here
 
-1. Open `docs/CURRENT-TASKS.md`, then `docs/00-strategy.md` § Architecture decision, then `docs/06-tech.md`.
+1. Open `docs/CURRENT-TASKS.md` Active list, then `src/app/README.md`.
 2. Run `git log --oneline -5`.
-3. **Starting point: build the `/app/*` SPA shell.** Concretely:
-   - Rename `src/generator/` → `src/app/`. Update `vite.config.ts` `outDir` from `../../generator` to `../../app`.
-   - `npm install react-router-dom`
-   - Replace `App.tsx` with a `<BrowserRouter basename="/app">` containing placeholder routes (`<Routes>` for login, signup, forgot, callback, dashboard, invoices, invoices/new, clients, settings, onboarding/1..3, welcome, done)
-   - Build `<AppLayout>` (sidebar + topbar + `<Outlet/>`) and `<AuthLayout>` (centered card). Match existing visual language: Inter, #0A0A0B / #9e005d palette, 8/10/16 radii.
-   - Build `<ProtectedRoute>` that wraps app routes — for now, mock the session (`useSession` returns `{ user: null }` initially).
-   - Add `vercel.json` at repo root: `{ "buildCommand": "cd src/app && npm install && npm run build", "outputDirectory": ".", "rewrites": [{ "source": "/app/:path*", "destination": "/app/index.html" }] }`
-   - Decide upfront: **shadcn/ui or hand-rolled primitives?** Ask the user before installing Tailwind — it's an irreversible-ish choice.
+3. **Starting point: wire real Supabase auth into the SPA.** Concretely:
+   - Provision Supabase free-tier project at supabase.com (region: `eu-central-1` Frankfurt). Note the project URL and anon key.
+   - Apply `db/schema.sql` via the Supabase SQL editor. Confirm RLS is on for `profiles` + `clients`.
+   - In `src/app/`, run `npm install @supabase/supabase-js`.
+   - Create `src/app/src/auth/supabase.ts` exporting a typed Supabase client (commit the URL + anon key — they're public-safe).
+   - Replace `useSession.ts` mock body with real `supabase.auth.getSession()` + `onAuthStateChange()`.
+   - Wire form submit handlers in `routes/login.tsx`, `signup.tsx`, `forgot.tsx`, `callback.tsx` to `supabase.auth.signInWithPassword`, `signUp`, `resetPasswordForEmail`, etc.
+   - Test happy path: open `/app/signup` → enter email/pw → check inbox for verify email → click link → land on `/app/callback` → forwarded to `/app/welcome` → click "Los geht's" → onboarding/1.
 4. Do the work.
 5. Before closing: update **Last Session Summary** + add a `CHANGELOG.md` entry.

@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-05-01 (night — `/app/*` SPA shell)
+
+- **`/app/*` SPA shell shipped.** Renamed `src/generator/` → `src/app/` and grew it into a full single-page application: 14 routes (login, signup, forgot, callback, welcome, done, onboarding/1-3, dashboard, invoices, invoices/new, clients, settings), three layouts (AppLayout with sidebar+topbar+mobile-bottom-nav, AuthLayout with centered card, OnboardingLayout with progress dots), ProtectedRoute wrapper, and a mocked `useSession` hook (`?dev-user=1` URL param toggles a fake user for layout development). Build verified: ~221 KB JS bundle (~69 KB gzipped), 14 KB CSS (3.5 KB gzipped). Vite outputs to `<repo>/app/` for Vercel to serve under the `/app/*` URL prefix.
+- **Tailwind + shadcn/ui adopted.** `tailwind.config.js` maps Klarbill's existing palette (#0A0A0B charcoal, #9e005d magenta, #FAFAFA bg, #525252 muted, #E5E5E5 border) onto shadcn's semantic CSS variables, so out-of-the-box shadcn components inherit the brand. `src/index.css` defines the theme via HSL CSS vars in `@layer base`. Three primitives committed: `Button` (variants: default/secondary/outline/ghost/link/destructive, sizes: default/sm/lg/icon), `Input`, `Card` (with Header/Title/Description/Content/Footer subcomponents). `cn()` helper from `lib/utils.ts`.
+- **`vercel.json` at repo root** wires the two-stack architecture into Vercel:
+  ```json
+  {
+    "buildCommand": "cd src/app && npm install --no-audit --no-fund && npm run build",
+    "outputDirectory": ".",
+    "rewrites": [{ "source": "/app/:path*", "destination": "/app/index.html" }]
+  }
+  ```
+  Marketing HTML at repo root continues to serve as-is; `/app/*` routes through the React Router-managed SPA shell. `cleanUrls: true` lets `/agb.html` also resolve as `/agb` for cleaner URLs.
+- **Path alias `@/*` → `src/*`** in both `tsconfig.json` (TypeScript resolution) and `vite.config.ts` (bundler). Standard shadcn convention.
+- **Mock auth in place.** `useSession()` returns `{ user: null, loading: false }` by default; `ProtectedRoute` redirects every authed route to `/login?next=...` preserving the original target. Append `?dev-user=1` to any URL to simulate a logged-in user during layout development. Supabase wiring lands in the next session.
+- **Routes intentionally re-implemented as React, not migrated from `_supabase-ready/`.** The vanilla-HTML auth backups (`_supabase-ready/{signup,login,forgot,callback}.html`) are now reference material only and won't be restored — they remain in the repo as a fallback in case the SPA approach hits a blocker.
+- **`src/app/README.md` rewritten** to reflect the SPA model: package layout, dev workflow, build output, decisions deferred (form library, state library, PDF font, XRechnung profile).
+
 ## 2026-05-01 (night — architecture refinement)
 
 - **Architecture clarified, not pivoted.** Earlier framing said "static HTML for marketing, React island only for the invoice generator, defer Next.js." That left a vague middle: where does login go? Where does the dashboard live? This update sets a clear boundary: marketing surface (7 pages: index, pricing, features, faq, impressum, agb, datenschutz) stays static HTML; everything behind login becomes a Vite-React SPA at `klarbill.de/app/*`. The `src/generator/` scaffold is the seed of this SPA — it gets renamed to `src/app/`, gets `react-router-dom`, gets an `<AppLayout>` (sidebar + topbar) and an `<AuthLayout>` (centered card), and grows route-by-route into login/signup/forgot/callback/onboarding/dashboard/invoices/clients/settings.
