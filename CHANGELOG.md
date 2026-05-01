@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-05-01 (post-cleanup — `.html` redirect coverage)
+
+- **Added `.html`-suffix variants to all 14 backward-compat redirects.** When the stale root HTML files were deleted, only extension-less paths (e.g. `/login`) were redirected to `/app/*`. Anyone visiting an old bookmark with `.html` (e.g. `klarbill.de/login.html`) hit a 404 because Vercel filesystem-first lookup found no file and the redirect rule didn't match the suffix. Fixed by adding `/login.html` → `/app/login` etc. for all 14 deleted pages — `vercel.json` now has 28 redirects total. **Lesson for future sessions:** when removing static HTML files that share names with SPA routes, always add redirects for both `/foo` and `/foo.html` versions, or use a regex pattern that matches the optional suffix.
+- **Drive folder reset to archive-only.** `/Users/rauf/Library/CloudStorage/GoogleDrive-rauf@investaz.az/My Drive/KlarBill` cleaned: removed 19 stale HTML files, deprecated `auth/`, `lib/`, `db/` folders, old `_supabase-ready/` copy, old `docs/` copy, old top-level `CHANGELOG.md` / `DEPLOY.md` / `README.md` / `TERMINAL-SETUP.md`, the `_archive_corrupted_backup.docx`, and `.DS_Store`. Replaced with a single `README.md` pointing to `~/Projects/klarbill/` as the active source of truth. Only `.claude/settings.local.json` kept (Claude Code config). Drive cloud auto-syncs the deletions.
+
 ## 2026-05-01 (end of long session — routing fixes)
 
 - **Removed 14 stale root HTML files** that conflicted with the SPA routes via Vercel's `cleanUrls` auto-strip behavior: `login.html`, `signup.html`, `forgot.html`, `callback.html`, `welcome.html`, `done.html`, `dashboard.html`, `invoices.html`, `clients.html`, `settings.html`, `invoice-new.html`, `onboarding-1.html`, `onboarding-2.html`, `onboarding-3.html`. These were logo-only placeholders pre-dating the SPA pivot — `/app/*` owns those URLs now. Marketing surface (`index.html`, `pricing.html`, `features.html`, `faq.html`, `impressum.html`, `agb.html`, `datenschutz.html`) untouched.
