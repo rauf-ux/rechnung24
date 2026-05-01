@@ -2,7 +2,7 @@
 
 > **Resume protocol:** read this file first when starting a new session. Then read [`00-strategy.md`](00-strategy.md) — it defines what Klarbill is and is not, and overrides anything in this file that contradicts it. Update this file at the end of each session.
 
-**Last updated:** 2026-05-01 (homepage refactor — Resend-style)
+**Last updated:** 2026-05-02 (design polish session — buttons, icons, animations)
 
 ## Setup state
 
@@ -104,6 +104,16 @@ Daily loop:
    (or `./deploy.sh "msg"` once that helper exists)
 3. Vercel auto-deploys → klarbill.de.
 
+## Last Session Summary (2026-05-02 — design polish: buttons, icons, animations)
+
+- **Wordmark v2 shipped** — `KlarBill.` (cap K + B + ending period). New SVG `viewBox="0 0 215.91 43.85"` (was 180.52×44.96). Bolder strokes, square i-dot, magenta period accent. 22 instances replaced site-wide via Python regex script.
+- **Button system: charcoal → magenta gradient with modern hover.** All primary CTAs use `linear-gradient(135deg, #9e005d 0%, #b8006d 100%)` with spring easing (`cubic-bezier(0.34, 1.56, 0.64, 1)`), magenta-tinted shadow that expands on hover, arrow slide on icons, and a diagonal shine sweep (`::before` pseudo) on `index.html` primary. Secondary outline buttons get magenta-tinted hover. Applied across `index.html`, `pricing.html` (.plan-cta tier buttons), `features.html`, `examples/beispielrechnung.html`, all marketing nav-cta, and the SPA shadcn `Button` component (default + secondary + outline + destructive variants).
+- **SPA token swap:** in `src/app/src/index.css` `--primary` is now magenta (was charcoal), `--secondary` is now charcoal (was magenta), `--ring` follows primary. AppLayout/dashboard/invoices-list "Neue Rechnung" CTAs migrated from `variant="secondary"` to default. done.tsx success badge: `bg-secondary` → `bg-primary`.
+- **Mouse-following spotlight on final CTA** (Vercel-style premium feel). CSS variables `--mouse-x`/`--mouse-y` updated via mousemove listener; soft white spotlight follows cursor with 0.4s fade.
+- **"60 Sekunden" — looping stopwatch animation.** The `60` in the final CTA H2 is wrapped in `<span class="countdown">`. Counts UP 1→60 in ~2s using tabular-nums (no layout shift), then magenta flash + 1.15× scale at 60, then resets every ~3.1s. Loops continuously while CTA is in viewport, auto-pauses on scroll-out (IntersectionObserver), resumes on re-entry.
+- **"How it works" badges: 01/02/03 → meaningful icons.** Pencil/edit (Daten eingeben), zap/lightning (Lokal generieren), download (Herunterladen & Senden). Magenta @15% bg, hover: solid magenta + white icon + 1.05× scale + −3° rotate (subtle "lift and twist"). Lucide-style 2px stroke SVGs.
+- **All deployed and live on klarbill.de.**
+
 ## Last Session Summary (2026-05-01, end of long session — SPA live + routing tuned)
 
 - **klarbill.de/app/* now serves the React SPA in production.** All 14 routes confirmed working in the browser: login, signup, forgot, callback, welcome, done, onboarding/1-3, dashboard, invoices, invoices/new, clients, settings.
@@ -139,15 +149,30 @@ Daily loop:
 
 ## Next Session — Start Here
 
-1. Open `docs/CURRENT-TASKS.md` Active list, then `src/app/README.md`.
-2. Run `git log --oneline -5`.
-3. **Starting point: wire real Supabase auth into the SPA.** Concretely:
-   - Provision Supabase free-tier project at supabase.com (region: `eu-central-1` Frankfurt). Note the project URL and anon key.
-   - Apply `db/schema.sql` via the Supabase SQL editor. Confirm RLS is on for `profiles` + `clients`.
-   - In `src/app/`, run `npm install @supabase/supabase-js`.
-   - Create `src/app/src/auth/supabase.ts` exporting a typed Supabase client (commit the URL + anon key — they're public-safe).
-   - Replace `useSession.ts` mock body with real `supabase.auth.getSession()` + `onAuthStateChange()`.
-   - Wire form submit handlers in `routes/login.tsx`, `signup.tsx`, `forgot.tsx`, `callback.tsx` to `supabase.auth.signInWithPassword`, `signUp`, `resetPasswordForEmail`, etc.
-   - Test happy path: open `/app/signup` → enter email/pw → check inbox for verify email → click link → land on `/app/callback` → forwarded to `/app/welcome` → click "Los geht's" → onboarding/1.
-4. Do the work.
-5. Before closing: update **Last Session Summary** + add a `CHANGELOG.md` entry.
+1. Open `docs/CURRENT-TASKS.md`. Skim the Active list and the Last Session Summary above.
+2. Run `git log --oneline -5` to see recent commits.
+3. **Starting point: wire real Supabase auth into the SPA.**
+
+   The user has confirmed they have a Supabase account. They will:
+   1. Create a project at supabase.com (region: `eu-central-1` Frankfurt). Free tier.
+   2. Run `db/schema.sql` via the Supabase SQL Editor.
+   3. Configure auth: Site URL `https://klarbill.de/app`, Redirect URLs include `/app/callback`, `/app/welcome`, plus localhost variants.
+   4. Hand over `SUPABASE_URL` + `SUPABASE_ANON_KEY` (anon key is public-safe; never request the service_role key).
+
+   You then:
+   1. `cd src/app && npm install @supabase/supabase-js`.
+   2. Create `src/app/src/auth/supabase.ts` exporting a typed Supabase client with the user's URL + anon key inlined (anon keys are safe to ship to the browser — RLS protects data).
+   3. Replace `src/app/src/auth/useSession.ts` mock body with real `supabase.auth.getSession()` + `onAuthStateChange()` subscription.
+   4. Wire form submit handlers in `routes/login.tsx` (`signInWithPassword`), `signup.tsx` (`signUp` + AGB checkbox already present), `forgot.tsx` (`resetPasswordForEmail`), `callback.tsx` (parse `?code=` and exchange for session). Add error states using shadcn primitives (no toast lib yet; inline error <p>).
+   5. Test happy path: signup with real email → email arrives (Supabase free SMTP, 3/hour rate limit) → click verify link → lands on `/app/callback` → forwarded to `/app/welcome` → "Los geht's" → onboarding/1.
+   6. Push and verify on prod.
+
+4. **After auth lands**, the natural next step is the invoice generator MVP at `routes/invoices/new.tsx` (multi-step form + jsPDF + XRechnung XML serialization).
+5. Before closing: update **Last Session Summary** + `CHANGELOG.md`.
+
+## Quick reference for next session
+
+- **vercel.json gotchas (do not break):** keep `outputDirectory: "."`, simple `/app/:path*` rewrite, no `cleanUrls`, both `/foo` and `/foo.html` redirects.
+- **Brand convention:** logo wordmark `KlarBill.` (caps + period), prose/titles `Klarbill` (single cap).
+- **Button system:** primary = magenta gradient, hover = spring lift + magenta shadow expand + arrow slide. Use `<Button>` default variant for primary CTAs, `secondary` for charcoal, `outline` for neutral.
+- **Free tier capacity:** ~100 active users no problem. Real bottleneck = Supabase email rate (3/hour); solution at scale = Resend (€20/mo).
