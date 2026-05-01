@@ -17,3 +17,4 @@ node_modules/
 src/generator/vite.config.d.ts
 src/generator/vite.config.js
 src/generator/vite.config.js.timestamp-*
+.fuse_hidden*
