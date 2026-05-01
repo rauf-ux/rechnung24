@@ -2,6 +2,9 @@
 
 ## 2026-05-01
 
+- **Migrated to terminal-based workflow** — installed Homebrew + gh CLI on user's Mac, authenticated with GitHub (rauf-ux), set git identity, cloned repo to `~/Projects/klarbill/`, consolidated entire Drive folder into the repo (HTML pages, docs/, db/, _supabase-ready/, README, CHANGELOG, DEPLOY guides, logo.svg). First terminal-driven push: 39 files, 3522 insertions, +113 deletions. Drive folder demoted to archive only. Cowork workspace switched to lokal repo — Claude no longer needs to fetch from GitHub each session (~95% token savings going forward).
+- **Fixed i-dot logo rendering bug** — original SVG combined the dot and i-body into a single `<path>` with `ZM` subpath syntax. Some browsers clipped the dot. Split into separate `<circle cx="151.24" cy="3.35" r="3.35"/>` + `<path>` elements (33 replacements across 23 HTML files + logo.svg). Guaranteed render in all browsers.
+
 - **Logo rolled out site-wide (19 HTML files, 29 logo instances):**
   - Replaced fake CSS logo (`<span class="logo-icon">R</span> Rechnung24`) with real `klarbill` wordmark SVG inlined into every page.
   - Pulled remaining 14 pages from GitHub (`github.com/rauf-ux/klarbill`), edited and saved to Drive ready for upload.
