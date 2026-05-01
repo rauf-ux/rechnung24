@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-01 (end of long session — routing fixes)
+
+- **Removed 14 stale root HTML files** that conflicted with the SPA routes via Vercel's `cleanUrls` auto-strip behavior: `login.html`, `signup.html`, `forgot.html`, `callback.html`, `welcome.html`, `done.html`, `dashboard.html`, `invoices.html`, `clients.html`, `settings.html`, `invoice-new.html`, `onboarding-1.html`, `onboarding-2.html`, `onboarding-3.html`. These were logo-only placeholders pre-dating the SPA pivot — `/app/*` owns those URLs now. Marketing surface (`index.html`, `pricing.html`, `features.html`, `faq.html`, `impressum.html`, `agb.html`, `datenschutz.html`) untouched.
+- **`vercel.json` tuned for the two-stack architecture.** Captured the working configuration after one cycle of debugging:
+  - `outputDirectory: "."` is **required** — without it, the build emits to `<repo>/app/` but Vercel doesn't include the artifacts in the deploy, breaking every `/app/*` URL.
+  - Use the simple `/app/:path*` rewrite — Vercel's `source` field doesn't reliably parse regex with negative lookaheads (`/app/((?!assets/).*)` returned 404s).
+  - Do **not** enable `cleanUrls`. With static `.html` files at root, it auto-strips `.html` from URLs and somehow conflicts with the SPA rewrite — observed `/app/welcome` returning Vercel 404 while `/app/login` worked, with no obvious file-system reason.
+  - Added 14 `redirects` mapping legacy paths (`/login`, `/welcome`, `/dashboard`, etc.) → `/app/*` so any old bookmark or external link still works.
+
 ## 2026-05-01 (night — `/app/*` SPA shell)
 
 - **`/app/*` SPA shell shipped.** Renamed `src/generator/` → `src/app/` and grew it into a full single-page application: 14 routes (login, signup, forgot, callback, welcome, done, onboarding/1-3, dashboard, invoices, invoices/new, clients, settings), three layouts (AppLayout with sidebar+topbar+mobile-bottom-nav, AuthLayout with centered card, OnboardingLayout with progress dots), ProtectedRoute wrapper, and a mocked `useSession` hook (`?dev-user=1` URL param toggles a fake user for layout development). Build verified: ~221 KB JS bundle (~69 KB gzipped), 14 KB CSS (3.5 KB gzipped). Vite outputs to `<repo>/app/` for Vercel to serve under the `/app/*` URL prefix.

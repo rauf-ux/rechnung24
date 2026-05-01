@@ -2,7 +2,7 @@
 
 > **Resume protocol:** read this file first when starting a new session. Then read [`00-strategy.md`](00-strategy.md) — it defines what Klarbill is and is not, and overrides anything in this file that contradicts it. Update this file at the end of each session.
 
-**Last updated:** 2026-05-01 (legal pages drafted + generator scaffolded)
+**Last updated:** 2026-05-01 (SPA shell live + routing fixes shipped)
 
 ## Setup state
 
@@ -15,7 +15,9 @@
 - ✅ **Strategy locked:** Klarbill is a template tool (see `00-strategy.md`)
 - ✅ **Legal scaffolding:** `agb.html` + `datenschutz.html` drafted with template-tool framing. `impressum.html` trimmed (old contradictory privacy-policy section removed). Footer links updated site-wide. Lawyer review still pending — launch posture remains private beta.
 - ✅ **Architecture refined:** marketing pages stay static HTML (7 files); everything behind login becomes a Vite-React SPA at `klarbill.de/app/*`. See `00-strategy.md` § Architecture decision.
-- ✅ **`/app/*` SPA shell shipped.** `src/generator/` renamed to `src/app/`. 14 routes mount with placeholder content (login, signup, forgot, callback, welcome, done, onboarding/1-3, dashboard, invoices, invoices/new, clients, settings). Three layouts (AppLayout, AuthLayout, OnboardingLayout) + ProtectedRoute. Tailwind + shadcn/ui (Button, Input, Card). Build emits to `<repo>/app/`: ~221 KB JS (~69 KB gz), 14 KB CSS. `vercel.json` configured with `/app/*` rewrite.
+- ✅ **`/app/*` SPA shell live on klarbill.de.** `src/generator/` renamed to `src/app/`. 14 routes mount with placeholder content (login, signup, forgot, callback, welcome, done, onboarding/1-3, dashboard, invoices, invoices/new, clients, settings). Three layouts (AppLayout, AuthLayout, OnboardingLayout) + ProtectedRoute. Tailwind + shadcn/ui (Button, Input, Card). Build emits to `<repo>/app/`: ~221 KB JS (~69 KB gz), 14 KB CSS.
+- ✅ **Old conflicting root HTML files deleted.** `login.html`, `signup.html`, `forgot.html`, `callback.html`, `welcome.html`, `done.html`, `dashboard.html`, `invoices.html`, `clients.html`, `settings.html`, `invoice-new.html`, `onboarding-1/2/3.html` were stale logo-only placeholders that conflicted with `/app/*` routes via Vercel's `cleanUrls` auto-strip. They're gone; SPA routes own those URLs now. `_supabase-ready/` backup folder still has the old auth versions for reference but won't be restored.
+- ✅ **`vercel.json` working configuration** — `outputDirectory: "."` is required (without it, build artifacts don't get served). Use simple `/app/:path*` rewrite (regex with negative lookahead like `/app/((?!assets/).*)` does NOT parse correctly on Vercel). Skip `cleanUrls` — it caused `/app/welcome` 404 even after the static welcome.html was removed. Redirects map legacy paths (`/login`, `/welcome`, etc.) → `/app/*` for backward-compat with bookmarks.
 - ✅ **Mock auth in place.** `useSession()` returns `{ user: null }` by default; `?dev-user=1` URL param simulates a logged-in user for layout development.
 
 ## Active (Phase 1 — Auth + Generator inside the SPA)
@@ -98,6 +100,13 @@ Daily loop:
    ```
    (or `./deploy.sh "msg"` once that helper exists)
 3. Vercel auto-deploys → klarbill.de.
+
+## Last Session Summary (2026-05-01, end of long session — SPA live + routing tuned)
+
+- **klarbill.de/app/* now serves the React SPA in production.** All 14 routes confirmed working in the browser: login, signup, forgot, callback, welcome, done, onboarding/1-3, dashboard, invoices, invoices/new, clients, settings.
+- **Legacy URL conflicts resolved.** Deleted 14 stale logo-only HTML files at root (login.html, signup.html, etc.) that conflicted with SPA routes. Marketing surface (index, pricing, features, faq, impressum, agb, datenschutz) stays static HTML, untouched. Backward-compat redirects in `vercel.json` map legacy paths (`/login`, `/welcome`, etc.) to their `/app/*` equivalents.
+- **`vercel.json` gotchas captured for future sessions** — see Setup state above. Three rules: keep `outputDirectory: "."`, use simple path patterns not regex with lookahead, do not enable `cleanUrls` (it conflicts with the SPA rewrite even when no static .html files share the path).
+- **Five commits this session pushed and live:** `cd3c317` brand sweep, `a7d79e0` strategy pivot to template tool, `aa5823a` legal pages + generator scaffold, `199b184` sandbox-artifact cleanup, `c8be2dc` SPA shell, `6feaa16` legacy HTML cleanup + redirects, plus a final `vercel.json` `outputDirectory` restore commit.
 
 ## Last Session Summary (2026-05-01, late night — `/app/*` SPA shell)
 
