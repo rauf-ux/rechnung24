@@ -8,3 +8,12 @@ node_modules/
 .env.local
 *.log
 .~lock.*
+
+# Vite build output for the invoice generator (regenerated on every Vercel deploy)
+/generator/
+
+# TypeScript build artifacts
+*.tsbuildinfo
+src/generator/vite.config.d.ts
+src/generator/vite.config.js
+src/generator/vite.config.js.timestamp-*

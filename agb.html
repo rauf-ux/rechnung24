@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AGB — Klarbill</title>
+  <meta name="description" content="Allgemeine Geschäftsbedingungen von Klarbill — dem Werkzeug zur Erstellung XRechnung-konformer Rechnungsdokumente.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    body { font-family: 'Inter', -apple-system, system-ui, sans-serif; background: #FAFAFA; color: #0A0A0B; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    nav { padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; gap: 4px; align-items: center; }
+    .nav-links a { padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #525252; transition: all 0.15s; }
+    .nav-links a:hover { background: white; color: #0A0A0B; }
+    .nav-cta { background: #0A0A0B !important; color: white !important; margin-left: 8px; }
+    .nav-cta:hover { background: #262626 !important; }
+
+    /* Hamburger */
+    .hamburger { display: none; width: 40px; height: 40px; border-radius: 8px; background: white; border: 1px solid #E5E5E5; cursor: pointer; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
+    .hamburger span { width: 18px; height: 2px; background: #0A0A0B; border-radius: 1px; transition: all 0.2s; }
+
+    /* Mobile menu */
+    .mobile-menu { display: none; position: fixed; top: 0; right: 0; width: 280px; height: 100vh; background: white; padding: 20px; box-shadow: -8px 0 24px rgba(0,0,0,0.08); z-index: 100; flex-direction: column; transform: translateX(100%); transition: transform 0.25s ease; }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-menu-header { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+    .mobile-menu-close { width: 36px; height: 36px; border-radius: 8px; background: #FAFAFA; border: none; cursor: pointer; font-size: 18px; color: #0A0A0B; display: flex; align-items: center; justify-content: center; }
+    .mobile-menu-links { display: flex; flex-direction: column; gap: 4px; }
+    .mobile-menu-links a { padding: 14px 16px; border-radius: 10px; font-size: 16px; font-weight: 500; color: #0A0A0B; }
+    .mobile-menu-links a:hover { background: #FAFAFA; }
+    .mobile-menu-links a.cta { background: #0A0A0B; color: white; text-align: center; margin-top: 8px; }
+    .mobile-menu-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99; }
+    .mobile-menu-backdrop.open { display: block; }
+
+    /* Page Header */
+    .page-header { padding: 60px 0 40px; }
+    .page-header h1 { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 12px; }
+    .page-header .subtitle { font-size: 14px; color: #737373; }
+
+    /* Notice banner */
+    .notice { background: #FFF8E1; border: 1px solid #F5D97A; border-radius: 10px; padding: 16px 20px; margin-bottom: 32px; max-width: 800px; }
+    .notice p { font-size: 13px; color: #6B5500; line-height: 1.6; margin: 0; }
+    .notice strong { color: #4A3A00; }
+
+    /* Content */
+    .content { background: white; border-radius: 16px; padding: 48px 40px; margin-bottom: 60px; max-width: 800px; }
+    .content section { margin-bottom: 40px; }
+    .content section:last-child { margin-bottom: 0; }
+    .content h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #E5E5E5; }
+    .content h3 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; }
+    .content p { font-size: 14px; color: #525252; line-height: 1.7; margin-bottom: 12px; }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul, .content ol { margin: 8px 0 16px 20px; }
+    .content li { font-size: 14px; color: #525252; margin-bottom: 6px; line-height: 1.6; }
+    .content a { color: #0A0A0B; text-decoration: underline; text-decoration-color: #C7C7C7; }
+    .content a:hover { text-decoration-color: #0A0A0B; }
+    .content strong { color: #0A0A0B; font-weight: 600; }
+    .content .info-block { background: #FAFAFA; border-radius: 10px; padding: 20px; margin: 16px 0; font-size: 14px; line-height: 1.7; }
+
+    /* Footer */
+    footer { padding: 40px 0; border-top: 1px solid #E5E5E5; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+    .footer-col h4 { font-size: 13px; font-weight: 600; margin-bottom: 12px; color: #0A0A0B; }
+    .footer-col a { display: block; padding: 4px 0; font-size: 14px; color: #737373; }
+    .footer-col a:hover { color: #0A0A0B; }
+    .footer-brand p { font-size: 13px; color: #737373; margin-top: 8px; max-width: 280px; }
+    .footer-bottom { padding-top: 24px; border-top: 1px solid #F5F5F5; text-align: center; color: #A3A3A3; font-size: 13px; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .page-header h1 { font-size: 28px; }
+      .content { padding: 32px 24px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .mobile-menu { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <nav>
+      <a href="/" class="logo" aria-label="klarbill">
+        <svg viewBox="0 0 180.52 44.96" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" style="display:block">
+          <path fill="#0A0A0B" d="M0,1.12h4.99v29.08l15.62-17.85h6.3l-12.73,14.18,14.9,17.79h-6.17l-11.82-14.31-6.1,6.89v7.42H0V1.12Z"/>
+          <path fill="#0A0A0B" d="M33.87,1.12h4.99v43.19h-4.99V1.12Z"/>
+          <path fill="#0A0A0B" d="M45.95,28.36c0-9.39,6.24-16.67,15.1-16.67,5.12,0,9.65,2.1,12.01,6.24v-5.58h4.99v31.97h-4.99v-5.58c-2.36,4.2-6.89,6.24-12.01,6.24-8.86,0-15.1-7.35-15.1-16.61ZM73.06,28.36c0-6.7-4.79-11.82-10.9-11.82s-11.09,4.99-11.09,11.82,4.73,11.75,11.09,11.75,10.9-5.05,10.9-11.75Z"/>
+          <path fill="#0A0A0B" d="M86.45,12.34h4.99v6.76c1.84-4.2,5.97-7.42,12.34-7.42v5.45c-7.48,0-12.34,4.2-12.34,12.01v15.16h-4.99V12.34Z"/>
+          <path fill="#9e005d" d="M114.35,38.73v5.58h-4.79V1.12h4.99v16.8c2.36-4.13,6.96-6.24,12.01-6.24,8.86,0,15.1,7.29,15.1,16.67s-6.24,16.61-15.1,16.61c-5.19,0-9.85-2.03-12.21-6.24ZM136.54,28.36c0-6.83-4.73-11.82-11.09-11.82s-10.9,5.12-10.9,11.82,4.79,11.75,10.9,11.75,11.09-4.99,11.09-11.75Z"/>
+          <circle fill="#9e005d" cx="151.24" cy="3.35" r="3.35"/><path fill="#9e005d" d="M148.75,12.34h4.99v31.97h-4.99V12.34Z"/>
+          <path fill="#9e005d" d="M162.14,1.12h4.99v43.19h-4.99V1.12Z"/>
+          <path fill="#9e005d" d="M175.53,1.12h4.99v43.19h-4.99V1.12Z"/>
+        </svg>
+      </a>
+      <div class="nav-links">
+        <a href="/features.html">Features</a>
+        <a href="/pricing.html">Preise</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/login.html">Anmelden</a>
+        <a href="/signup.html" class="nav-cta">Kostenlos starten</a>
+      </div>
+      <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.add('open'); document.querySelector('.mobile-menu-backdrop').classList.add('open')">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+
+    <div class="mobile-menu-backdrop" onclick="document.querySelector('.mobile-menu').classList.remove('open'); document.querySelector('.mobile-menu-backdrop').classList.remove('open')"></div>
+    <div class="mobile-menu">
+      <div class="mobile-menu-header">
+        <button class="mobile-menu-close" onclick="document.querySelector('.mobile-menu').classList.remove('open'); document.querySelector('.mobile-menu-backdrop').classList.remove('open')">✕</button>
+      </div>
+      <div class="mobile-menu-links">
+        <a href="/features.html">Features</a>
+        <a href="/pricing.html">Preise</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/login.html">Anmelden</a>
+        <a href="/signup.html" class="cta">Kostenlos starten</a>
+      </div>
+    </div>
+
+    <section class="page-header">
+      <h1>Allgemeine Geschäftsbedingungen</h1>
+      <p class="subtitle">Stand: Mai 2026</p>
+    </section>
+
+    <div class="notice">
+      <p><strong>Hinweis:</strong> Diese AGB sind eine vorläufige Fassung. Eine abschließende anwaltliche Prüfung steht aus. Bis dahin steht Klarbill ausschließlich in einer geschlossenen Beta-Phase ausgewählten Testnutzern zur Verfügung.</p>
+    </div>
+
+    <div class="content">
+
+      <section>
+        <h2>§ 1 Geltungsbereich und Vertragspartner</h2>
+        <p>
+          Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB") gelten für sämtliche Verträge zwischen dem Anbieter (siehe <a href="/impressum.html">Impressum</a>, nachfolgend „Klarbill") und dem Nutzer über die Nutzung der unter <a href="https://klarbill.de">klarbill.de</a> bereitgestellten Software (nachfolgend „Dienst").
+        </p>
+        <p>
+          Der Dienst richtet sich ausschließlich an Unternehmer im Sinne von § 14 BGB, insbesondere an Freiberufler, Solo-Selbstständige, Kleinunternehmer (§ 19 UStG) sowie kleine Kapital- und Personengesellschaften. Eine Nutzung durch Verbraucher (§ 13 BGB) ist nicht vorgesehen.
+        </p>
+        <p>
+          Abweichende, entgegenstehende oder ergänzende Bedingungen des Nutzers werden nicht Vertragsbestandteil, es sei denn, Klarbill stimmt ihrer Geltung ausdrücklich schriftlich zu.
+        </p>
+      </section>
+
+      <section>
+        <h2>§ 2 Vertragsgegenstand und Leistungsumfang</h2>
+        <p>
+          <strong>Klarbill ist ein Software-Werkzeug zur Erstellung von Rechnungsdokumenten.</strong> Der Nutzer gibt selbst Daten in eine Web-Eingabemaske ein (eigene Unternehmensdaten, Empfängerdaten, Leistungspositionen, Beträge); die Software erzeugt aus diesen Eingaben lokal im Browser des Nutzers ein PDF-Dokument sowie eine XML-Datei im XRechnung-Format.
+        </p>
+        <p>
+          Klarbill bietet darüber hinaus optional die Möglichkeit, die Stammdaten des Nutzers (eigene Firma, Kundenliste) auf eigenen Servern zu speichern, damit der Nutzer diese nicht bei jeder Rechnung erneut eingeben muss.
+        </p>
+        <p>
+          <strong>Klarbill bietet ausdrücklich nicht:</strong>
+        </p>
+        <ul>
+          <li>keine Steuerberatung im Sinne des Steuerberatungsgesetzes (StBerG);</li>
+          <li>keine Rechtsberatung im Sinne des Rechtsdienstleistungsgesetzes (RDG);</li>
+          <li>keine Buchführung oder Buchhaltung;</li>
+          <li>keine GoBD-konforme Archivierung der erzeugten Rechnungen;</li>
+          <li>keine Versendung der erzeugten Rechnungen an Empfänger im Namen des Nutzers;</li>
+          <li>keine Zahlungsabwicklung oder Mahnwesen;</li>
+          <li>keine Garantie für die rechtliche Korrektheit oder steuerliche Zulässigkeit der vom Nutzer eingegebenen Daten.</li>
+        </ul>
+        <p>
+          Der Nutzer ist sich bewusst, dass Klarbill ein technisches Hilfsmittel ist und die Sorgfaltspflicht im Rahmen der Rechnungsstellung und der Erfüllung steuerlicher Pflichten beim Nutzer verbleibt.
+        </p>
+      </section>
+
+      <section>
+        <h2>§ 3 Vertragsschluss und Registrierung</h2>
+        <p>
+          Der Vertrag kommt mit der Registrierung des Nutzers auf klarbill.de und der Bestätigung der E-Mail-Adresse zustande. Die Registrierung ist kostenlos.
+        </p>
+        <p>
+          Der Nutzer ist verpflichtet, bei der Registrierung wahrheitsgemäße und vollständige Angaben zu machen und diese bei Änderungen aktuell zu halten. Die Zugangsdaten sind geheim zu halten und vor dem Zugriff Dritter zu schützen.
+        </p>
+        <p>
+          Klarbill behält sich vor, Registrierungen ohne Angabe von Gründen abzulehnen oder bestehende Konten zu sperren, insbesondere bei Anhaltspunkten für Missbrauch.
+        </p>
+      </section>
+
+      <section>
+        <h2>§ 4 Pflichten des Nutzers</h2>
+        <p>
+          Der Nutzer ist allein verantwortlich für:
+        </p>
+        <ul>
+          <li>die Richtigkeit, Vollständigkeit und steuerrechtliche Zulässigkeit aller in den Dienst eingegebenen Daten, einschließlich der eigenen Unternehmensangaben, Steuernummer, USt-IdNr., Kundendaten, Leistungsbeschreibungen und Beträge;</li>
+          <li>die Einhaltung der Pflichtangaben gemäß § 14 UStG;</li>
+          <li>die Einhaltung der Voraussetzungen des § 19 UStG (Kleinunternehmerregelung), sofern die entsprechende Option im Dienst aktiviert wird;</li>
+          <li>die fortlaufende, lückenlose Vergabe der Rechnungsnummern (der Dienst schlägt eine Nummer vor, prüft jedoch nicht, ob die tatsächliche Nummernfolge gesetzeskonform ist);</li>
+          <li>die GoBD-konforme Aufbewahrung der erzeugten Rechnungen für die gesetzliche Aufbewahrungsfrist von acht Jahren gemäß § 147 AO; Klarbill stellt hierfür <strong>ausdrücklich keinen Speicher- oder Archivdienst</strong> zur Verfügung;</li>
+          <li>die fristgerechte Übermittlung der Rechnungen an die jeweiligen Empfänger;</li>
+          <li>die steuerliche und buchhalterische Verarbeitung der Rechnungen, insbesondere die Anmeldung der Umsatzsteuer.</li>
+        </ul>
+        <p>
+          Im Zweifel hat der Nutzer steuerlichen oder rechtlichen Rat bei einem Steuerberater oder Rechtsanwalt einzuholen.
+        </p>
+      </section>
+
+      <section>
+        <h2>§ 5 Haftungsausschluss und Haftungsbeschränkung</h2>
+        <p>
+          Klarbill haftet unbeschränkt nur bei Vorsatz und grober Fahrlässigkeit sowie bei Verletzung des Lebens, des Körpers oder der Gesundheit. Im Übrigen ist die Haftung wie folgt beschränkt:
+        </p>
+        <ol>
+          <li>Bei leichter Fahrlässigkeit haftet Klarbill nur bei Verletzung wesentlicher Vertragspflichten (Kardinalpflichten), und auch dann nur in Höhe des bei Vertragsschluss vorhersehbaren, vertragstypischen Schadens.</li>
+          <li>Eine darüber hinausgehende Haftung — insbesondere für mittelbare Schäden, entgangenen Gewinn, Steuernachzahlungen, Bußgelder, Verspätungszuschläge oder Folgeschäden aus fehlerhaft erstellten Rechnungen — ist ausgeschlossen.</li>
+          <li>Klarbill haftet nicht für die rechtliche Korrektheit, steuerliche Zulässigkeit oder GoBD-Konformität der vom Nutzer mit dem Dienst erstellten Rechnungsdokumente. Die Verantwortung hierfür trägt allein der Nutzer (siehe § 4).</li>
+          <li>Die Haftung nach dem Produkthaftungsgesetz bleibt unberührt.</li>
+        </ol>
+        <p>
+          Klarbill weist ausdrücklich darauf hin, dass eine fehlerfreie und ununterbrochene Verfügbarkeit des Dienstes technisch nicht garantiert werden kann. Es besteht kein Anspruch auf eine bestimmte Verfügbarkeit. Der Nutzer ist gehalten, erzeugte Rechnungsdokumente unmittelbar nach der Erzeugung lokal zu speichern.
+        </p>
+      </section>
+
+      <section>
+        <h2>§ 6 Datenschutz und Verarbeitung von Rechnungsdaten</h2>
+        <p>
+          Die Verarbeitung personenbezogener Daten richtet sich nach der <a href="/datenschutz.html">Datenschutzerklärung</a>.
+        </p>
+        <p>
+          <strong>Klarbill speichert die Inhalte der vom Nutzer erstellten Rechnungen nicht auf seinen Servern.</strong> Die Erzeugung der PDF- und XRechnung-XML-Dokumente erfolgt ausschließlich lokal im Browser des Nutzers. Klarbill ist dementsprechend kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO bezüglich der Inhalte der Rechnungsdokumente. Ein Auftragsverarbeitungsvertrag (AVV) bezüglich Rechnungsinhalten ist daher nicht erforderlich und wird nicht angeboten.
+        </p>
+        <p>
+          Hinsichtlich der vom Nutzer optional gespeicherten Stammdaten (eigene Firma, Kundenliste) ist Klarbill Verantwortlicher im Sinne der DSGVO. Einzelheiten zur Speicherung, zu Sub-Auftragsverarbeitern (Hosting, Authentifizierung) sowie zu den Rechten des Nutzers ergeben sich aus der Datenschutzerklärung.
+        </p>
+      </section>
+
+      <section>
+        <h2>§ 7 Vergütung</h2>
+        <p>
+          Die Nutzung von Klarbill ist in der Phase der geschlossenen Beta kostenlos. Klarbill behält sich vor, zukünftig kostenpflichtige Funktionen oder Tarife einzuführen. Bestehende Nutzer werden über Änderungen mindestens 30 Tage im Voraus per E-Mail informiert und haben das Recht, den Vertrag bei Ablehnung zu kündigen.
+        </p>
+        <p>
+          Die jeweils geltenden Preise und Leistungen werden auf der Seite <a href="/pricing.html">Preise</a> ausgewiesen.
+        </p>
+      </section>
+
+      <section>
+        <h2>§ 8 Laufzeit und Kündigung</h2>
+        <p>
+          Der Vertrag wird auf unbestimmte Zeit geschlossen und kann von beiden Seiten jederzeit ohne Einhaltung einer Frist in Textform (E-Mail genügt) gekündigt werden. Eine Kündigung durch den Nutzer ist auch durch Löschung des Kontos im Dienst möglich.
+        </p>
+        <p>
+          Bei Kündigung werden die auf den Servern von Klarbill gespeicherten Stammdaten des Nutzers innerhalb von 30 Tagen gelöscht. Erzeugte Rechnungsdokumente sind hiervon nicht betroffen, da sie nicht auf den Servern von Klarbill gespeichert werden.
+        </p>
+        <p>
+          Klarbill kann den Vertrag aus wichtigem Grund fristlos kündigen, insbesondere bei nachhaltigem Verstoß des Nutzers gegen diese AGB oder gegen geltendes Recht.
+        </p>
+      </section>
+
+      <section>
+        <h2>§ 9 Änderung der AGB</h2>
+        <p>
+          Klarbill behält sich vor, diese AGB anzupassen, soweit dies aus rechtlichen, technischen oder wirtschaftlichen Gründen erforderlich ist und die Änderung den Nutzer nicht unangemessen benachteiligt. Über Änderungen wird der Nutzer mindestens 30 Tage vor Inkrafttreten per E-Mail informiert. Widerspricht der Nutzer den Änderungen nicht innerhalb dieser Frist, gelten die geänderten AGB als angenommen. Auf das Widerspruchsrecht wird in der Mitteilung gesondert hingewiesen.
+        </p>
+      </section>
+
+      <section>
+        <h2>§ 10 Schlussbestimmungen</h2>
+        <p>
+          Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts.
+        </p>
+        <p>
+          Ausschließlicher Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesem Vertrag ist, soweit der Nutzer Kaufmann, juristische Person des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen ist, der Geschäftssitz von Klarbill (siehe <a href="/impressum.html">Impressum</a>).
+        </p>
+        <p>
+          Sollten einzelne Bestimmungen dieser AGB ganz oder teilweise unwirksam sein oder werden, so wird hierdurch die Wirksamkeit der übrigen Bestimmungen nicht berührt. An die Stelle der unwirksamen Bestimmung tritt die gesetzliche Regelung.
+        </p>
+        <p>
+          Klarbill ist nicht verpflichtet und nicht bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+        </p>
+      </section>
+
+    </div>
+
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="logo" aria-label="klarbill">
+            <svg viewBox="0 0 180.52 44.96" height="28" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" style="display:block">
+              <path fill="#0A0A0B" d="M0,1.12h4.99v29.08l15.62-17.85h6.3l-12.73,14.18,14.9,17.79h-6.17l-11.82-14.31-6.1,6.89v7.42H0V1.12Z"/>
+              <path fill="#0A0A0B" d="M33.87,1.12h4.99v43.19h-4.99V1.12Z"/>
+              <path fill="#0A0A0B" d="M45.95,28.36c0-9.39,6.24-16.67,15.1-16.67,5.12,0,9.65,2.1,12.01,6.24v-5.58h4.99v31.97h-4.99v-5.58c-2.36,4.2-6.89,6.24-12.01,6.24-8.86,0-15.1-7.35-15.1-16.61ZM73.06,28.36c0-6.7-4.79-11.82-10.9-11.82s-11.09,4.99-11.09,11.82,4.73,11.75,11.09,11.75,10.9-5.05,10.9-11.75Z"/>
+              <path fill="#0A0A0B" d="M86.45,12.34h4.99v6.76c1.84-4.2,5.97-7.42,12.34-7.42v5.45c-7.48,0-12.34,4.2-12.34,12.01v15.16h-4.99V12.34Z"/>
+              <path fill="#9e005d" d="M114.35,38.73v5.58h-4.79V1.12h4.99v16.8c2.36-4.13,6.96-6.24,12.01-6.24,8.86,0,15.1,7.29,15.1,16.67s-6.24,16.61-15.1,16.61c-5.19,0-9.85-2.03-12.21-6.24ZM136.54,28.36c0-6.83-4.73-11.82-11.09-11.82s-10.9,5.12-10.9,11.82,4.79,11.75,10.9,11.75,11.09-4.99,11.09-11.75Z"/>
+              <circle fill="#9e005d" cx="151.24" cy="3.35" r="3.35"/><path fill="#9e005d" d="M148.75,12.34h4.99v31.97h-4.99V12.34Z"/>
+              <path fill="#9e005d" d="M162.14,1.12h4.99v43.19h-4.99V1.12Z"/>
+              <path fill="#9e005d" d="M175.53,1.12h4.99v43.19h-4.99V1.12Z"/>
+            </svg>
+          </div>
+          <p>Software-Werkzeug zur Erstellung XRechnung-konformer Rechnungsdokumente.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Produkt</h4>
+          <a href="/features.html">Features</a>
+          <a href="/pricing.html">Preise</a>
+          <a href="/faq.html">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4>Rechtliches</h4>
+          <a href="/impressum.html">Impressum</a>
+          <a href="/datenschutz.html">Datenschutz</a>
+          <a href="/agb.html">AGB</a>
+        </div>
+        <div class="footer-col">
+          <h4>Kontakt</h4>
+          <a href="mailto:hallo@klarbill.de">hallo@klarbill.de</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 Klarbill · Made in Germany
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

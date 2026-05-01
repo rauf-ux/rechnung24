@@ -1,0 +1,125 @@
+/* Klarbill generator — scoped styles.
+ * Match the visual language of the existing static pages: Inter, charcoal text,
+ * 8/10/16/24px radii, soft #FAFAFA backgrounds, monochrome palette with
+ * #9e005d as the secondary accent (the "bill" magenta from the wordmark). */
+
+.generator {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  color: #0A0A0B;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #E5E5E5;
+  border-radius: 16px;
+  padding: 32px 36px 24px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.generator-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+}
+
+.generator-header .muted {
+  font-size: 13px;
+  color: #737373;
+  margin: 0 0 24px;
+}
+
+/* Stepper */
+
+.stepper {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 24px;
+  padding: 6px;
+  background: #FAFAFA;
+  border-radius: 12px;
+}
+
+.stepper-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #737373;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.stepper-item:hover { color: #0A0A0B; }
+.stepper-item.is-active { background: #fff; color: #0A0A0B; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+.stepper-item.is-done .stepper-num { background: #9e005d; color: #fff; }
+
+.stepper-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #E5E5E5;
+  color: #525252;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stepper-item.is-active .stepper-num { background: #0A0A0B; color: #fff; }
+
+@media (max-width: 600px) {
+  .stepper-label { display: none; }
+  .stepper-item { padding: 10px; }
+}
+
+/* Body */
+
+.generator-body {
+  min-height: 240px;
+  padding: 16px 0;
+  border-top: 1px solid #F5F5F5;
+  border-bottom: 1px solid #F5F5F5;
+}
+
+.placeholder {
+  font-size: 14px;
+  color: #525252;
+  margin: 0;
+}
+
+/* Actions */
+
+.generator-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-primary { background: #0A0A0B; color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #262626; }
+
+.btn-ghost { background: transparent; color: #525252; border-color: #E5E5E5; }
+.btn-ghost:hover:not(:disabled) { background: #FAFAFA; color: #0A0A0B; }
