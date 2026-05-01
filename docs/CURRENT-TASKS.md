@@ -2,7 +2,7 @@
 
 > **Resume protocol:** read this file first when starting a new session. Then read [`00-strategy.md`](00-strategy.md) — it defines what Klarbill is and is not, and overrides anything in this file that contradicts it. Update this file at the end of each session.
 
-**Last updated:** 2026-05-01 (SPA shell live + routing fixes shipped)
+**Last updated:** 2026-05-01 (homepage refactor — Resend-style)
 
 ## Setup state
 
@@ -19,6 +19,7 @@
 - ✅ **Old conflicting root HTML files deleted.** `login.html`, `signup.html`, `forgot.html`, `callback.html`, `welcome.html`, `done.html`, `dashboard.html`, `invoices.html`, `clients.html`, `settings.html`, `invoice-new.html`, `onboarding-1/2/3.html` were stale logo-only placeholders that conflicted with `/app/*` routes via Vercel's `cleanUrls` auto-strip. They're gone; SPA routes own those URLs now. `_supabase-ready/` backup folder still has the old auth versions for reference but won't be restored.
 - ✅ **`vercel.json` working configuration** — `outputDirectory: "."` is required (without it, build artifacts don't get served). Use simple `/app/:path*` rewrite (regex with negative lookahead like `/app/((?!assets/).*)` does NOT parse correctly on Vercel). Skip `cleanUrls` — it caused `/app/welcome` 404 even after the static welcome.html was removed. Redirects map legacy paths to `/app/*` for backward-compat with bookmarks — **both extension-less (`/login`) AND `.html`-suffix (`/login.html`) versions are listed** for every deleted static page (28 redirects total). When you delete a static HTML file that's now an SPA route, always add both forms or you'll get 404s on old bookmarks.
 - ✅ **Mock auth in place.** `useSession()` returns `{ user: null }` by default; `?dev-user=1` URL param simulates a logged-in user for layout development.
+- ✅ **Homepage refactored Resend-style.** New `index.html` with light/dark section rhythm, animated form-to-PDF preview hero (CSS-only), XRechnung XML showcase, dark gradient final CTA. New `/examples/beispielrechnung.html` — A4 sample invoice users can preview/print without signing up. Positioning fixes baked in (no more "GoBD-konform" lie, no €9.90 tier, "Private Beta · kostenlos" badge).
 
 ## Active (Phase 1 — Auth + Generator inside the SPA)
 
