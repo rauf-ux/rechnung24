@@ -1,0 +1,42 @@
+# Changelog
+
+## 2026-05-01
+
+- **Logo rolled out site-wide (19 HTML files, 29 logo instances):**
+  - Replaced fake CSS logo (`<span class="logo-icon">R</span> Rechnung24`) with real `klarbill` wordmark SVG inlined into every page.
+  - Pulled remaining 14 pages from GitHub (`github.com/rauf-ux/klarbill`), edited and saved to Drive ready for upload.
+  - Top-bar logo: 32px height. Footer / secondary placement: 28px height (visual hierarchy).
+  - Two-tone branding preserved: "klar" → `#0A0A0B`, "bill" → `#9e005d`.
+  - Inline SVG approach (no external `/logo.svg` request, scales crisp, color-controllable via CSS).
+  - Discovered footer-brand logo blocks in 5 marketing pages (index, features, pricing, faq, impressum) — agent had only updated top-bar; manually fixed footer.
+  - Discovered dashboard pages (dashboard, invoices, clients, invoice-new, settings) have BOTH sidebar + topbar logos — both updated.
+  - `index.html` footer used to say "Klarbill" with `K` icon while top said "Rechnung24" with `R` — both are now the unified klarbill wordmark.
+
+- **Auth refactored to match real klarbill repo structure:**
+  - Inspected live repo `github.com/rauf-ux/klarbill` and discovered flat root layout (no subfolders), inline `<style>` blocks per page, monochromatic palette, "Rechnung24" branding (not Klarbill), `<a>` placeholder buttons (no real form submit).
+  - Wrote drop-in replacements at repo root: `signup.html`, `login.html`, `forgot.html` — preserve 100% of existing markup, classes (`.input`, `.submit-btn`, `.social-btn`, `.auth-card`, etc.) and inline styling. Added Supabase wiring as inline `<script>` blocks at bottom.
+  - Added new `callback.html` (matching visual style) for OAuth + email-verification + password-recovery flows.
+  - Consolidated all auth logic into single `supabase.js` at root (replaces the obsolete `lib/config.js + lib/auth.js + lib/guard.js` triple). Exposes `window.klarbillAuth.{signUp, signIn, signInWithGoogle, resetPassword, updatePassword, signOut, getSession, guard, isValidEmail, friendlyError}`.
+  - Forgot.html: removed the "demo state toggle" (live now, not a mockup).
+  - DEPLOY.md fully rewritten for actual repo structure: 5 files to upload to root via GitHub web drag-and-drop, no subfolder creation needed.
+  - Obsolete artefacts (Drive `auth/`, `lib/`, `db/` folders) marked as ignore in DEPLOY.md.
+
+## 2026-04-30
+
+- **Auth system shipped (static MVP):**
+  - Added `db/schema.sql` (Supabase): `profiles` table 1-1 with `auth.users`, RLS policies, auto-create trigger on signup, `updated_at` helper.
+  - Added `lib/auth.js`: `window.klarbillAuth` wrapper for signup, login, Google OAuth, password reset, email verification resend, profile read/update, password-strength scoring, German error mapping.
+  - Added `lib/config.js` (Supabase URL + anon key) and `lib/guard.js` (drop-in session guard with `?next=` redirect support).
+  - Added `auth/signup.html`, `auth/login.html`, `auth/forgot.html`, `auth/callback.html` — all wired to `klarbillAuth`, mobile-first, design-token-aligned, German UI copy.
+  - Added shared `auth/auth.css` with full token system (colors, typography, radii, focus rings, password meter, alert states, mobile breakpoints).
+  - Added `docs/07-auth-setup.md`: Supabase + Google OAuth setup walkthrough, email-template overrides, deployment checklist, smoke-test script, troubleshooting matrix.
+  - Updated `docs/06-tech.md` with auth section + current vs. future env-var lists.
+- Polished `README.md` for GitHub: hero block with logo + badges (live, status, stack, license), feature list, tech-stack comparison table, quick-start, project structure, demo accounts, roadmap teaser, contributing + license sections.
+- Reorganized backup from monolithic `.docx` (corrupted during Drive sync) into modular `docs/` structure.
+- Created concise README.md as index.
+- Established `CURRENT-TASKS.md` as the single resume entry point for new sessions.
+- Documented design tokens, page structure, compliance requirements, roadmap, and tech stack across 6 separate files.
+
+## Earlier
+
+- (Pre-restructure history lost with the corrupted `.docx` backup. Refer to git history of `github.com/rauf-ux/rechnung24` for code-level changes.)

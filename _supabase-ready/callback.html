@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bestätigung — Rechnung24</title>
+  <meta name="description" content="Bestätige dein Rechnung24-Konto.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    body { font-family: 'Inter', -apple-system, system-ui, sans-serif; background: #FAFAFA; color: #0A0A0B; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Top bar */
+    .top-bar { padding: 24px 32px; }
+    .logo { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; display: inline-flex; align-items: center; gap: 8px; }
+    .logo-icon { width: 28px; height: 28px; background: #0A0A0B; border-radius: 8px; color: white; text-align: center; line-height: 28px; font-weight: 700; font-size: 14px; }
+
+    /* Main */
+    .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .auth-card { width: 100%; max-width: 440px; }
+
+    /* Header */
+    .auth-header { text-align: center; margin-bottom: 32px; }
+    .auth-header h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .auth-header p { font-size: 14px; color: #737373; }
+
+    /* Form card */
+    .auth-form { background: white; border: 1px solid #E5E5E5; border-radius: 16px; padding: 32px; text-align: center; }
+
+    /* Status icon */
+    .status-icon { width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; font-size: 28px; background: #FAFAFA; }
+    .status-icon.success { background: #DCFCE7; }
+    .status-icon.error { background: #FEF2F2; }
+
+    /* Big spinner for the loading state */
+    .big-spinner { width: 32px; height: 32px; border: 3px solid #E5E5E5; border-top-color: #0A0A0B; border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 24px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Form field (recovery only) */
+    .field { margin-bottom: 16px; text-align: left; }
+    .label { display: block; font-size: 13px; color: #525252; font-weight: 500; margin-bottom: 6px; }
+    .input { width: 100%; height: 44px; background: white; border: 1px solid #E5E5E5; border-radius: 10px; padding: 0 14px; font-size: 14px; color: #0A0A0B; font-family: inherit; transition: all 0.15s; }
+    .input:focus { outline: none; border-color: #0A0A0B; border-width: 1.5px; }
+    .input::placeholder { color: #A3A3A3; }
+    .pw-hint { font-size: 12px; color: #737373; margin-top: 8px; line-height: 1.5; text-align: left; }
+
+    /* Submit */
+    .submit-btn { width: 100%; height: 48px; background: #0A0A0B; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; }
+    .submit-btn:hover:not(:disabled) { background: #262626; }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .submit-btn .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+
+    /* Alerts */
+    .alert { padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5; margin-bottom: 16px; display: none; text-align: left; }
+    .alert.is-visible { display: block; }
+    .alert-error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
+    .alert-success { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+
+    /* Status text */
+    .status-title { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .status-text { font-size: 14px; color: #525252; line-height: 1.6; }
+
+    /* Footer */
+    .auth-footer { text-align: center; margin-top: 24px; font-size: 14px; color: #737373; }
+    .auth-footer a { color: #0A0A0B; font-weight: 500; }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .top-bar { padding: 20px 24px; }
+      .auth-form { padding: 24px; }
+      .auth-header h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="/" class="logo" aria-label="klarbill">
+      <svg viewBox="0 0 180.52 44.96" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" style="display:block">
+        <path fill="#0A0A0B" d="M0,1.12h4.99v29.08l15.62-17.85h6.3l-12.73,14.18,14.9,17.79h-6.17l-11.82-14.31-6.1,6.89v7.42H0V1.12Z"/>
+        <path fill="#0A0A0B" d="M33.87,1.12h4.99v43.19h-4.99V1.12Z"/>
+        <path fill="#0A0A0B" d="M45.95,28.36c0-9.39,6.24-16.67,15.1-16.67,5.12,0,9.65,2.1,12.01,6.24v-5.58h4.99v31.97h-4.99v-5.58c-2.36,4.2-6.89,6.24-12.01,6.24-8.86,0-15.1-7.35-15.1-16.61ZM73.06,28.36c0-6.7-4.79-11.82-10.9-11.82s-11.09,4.99-11.09,11.82,4.73,11.75,11.09,11.75,10.9-5.05,10.9-11.75Z"/>
+        <path fill="#0A0A0B" d="M86.45,12.34h4.99v6.76c1.84-4.2,5.97-7.42,12.34-7.42v5.45c-7.48,0-12.34,4.2-12.34,12.01v15.16h-4.99V12.34Z"/>
+        <path fill="#9e005d" d="M114.35,38.73v5.58h-4.79V1.12h4.99v16.8c2.36-4.13,6.96-6.24,12.01-6.24,8.86,0,15.1,7.29,15.1,16.67s-6.24,16.61-15.1,16.61c-5.19,0-9.85-2.03-12.21-6.24ZM136.54,28.36c0-6.83-4.73-11.82-11.09-11.82s-10.9,5.12-10.9,11.82,4.79,11.75,10.9,11.75,11.09-4.99,11.09-11.75Z"/>
+        <path fill="#9e005d" d="M147.96,3.35c0-1.84,1.44-3.35,3.28-3.35s3.35,1.51,3.35,3.35-1.51,3.28-3.35,3.28-3.28-1.44-3.28-3.28ZM148.75,12.34h4.99v31.97h-4.99V12.34Z"/>
+        <path fill="#9e005d" d="M162.14,1.12h4.99v43.19h-4.99V1.12Z"/>
+        <path fill="#9e005d" d="M175.53,1.12h4.99v43.19h-4.99V1.12Z"/>
+      </svg>
+    </a>
+  </div>
+
+  <main class="main">
+    <div class="auth-card">
+
+      <div class="auth-form">
+
+        <!-- Loading state -->
+        <div id="loadingState">
+          <div class="big-spinner"></div>
+          <h2 class="status-title">Einen Moment…</h2>
+          <p class="status-text">Wir bestätigen deinen Zugang.</p>
+        </div>
+
+        <!-- Success state -->
+        <div id="successState" style="display:none">
+          <div class="status-icon success">✓</div>
+          <h2 class="status-title">Erfolgreich!</h2>
+          <p class="status-text">Dein Konto ist aktiviert. Du wirst weitergeleitet…</p>
+        </div>
+
+        <!-- Recovery state (set new password) -->
+        <div id="recoveryState" style="display:none">
+          <h2 class="status-title">Neues Passwort wählen</h2>
+          <p class="status-text" style="margin-bottom:24px">Lege ein sicheres Passwort für dein Konto fest.</p>
+
+          <div id="alert" class="alert" role="alert" aria-live="polite"></div>
+
+          <form id="recoveryForm" novalidate>
+            <div class="field">
+              <label class="label" for="newPassword">Neues Passwort</label>
+              <input type="password" id="newPassword" class="input" placeholder="Mindestens 8 Zeichen" required minlength="8">
+              <p class="pw-hint">Mindestens 8 Zeichen, ein Großbuchstabe und eine Zahl.</p>
+            </div>
+
+            <button type="submit" id="setPwBtn" class="submit-btn">
+              <span class="btn-label">Passwort speichern</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Error state -->
+        <div id="errorState" style="display:none">
+          <div class="status-icon error">!</div>
+          <h2 class="status-title">Link ungültig oder abgelaufen</h2>
+          <p class="status-text">Bitte fordere einen neuen Bestätigungs- oder Reset-Link an.</p>
+        </div>
+
+      </div>
+
+      <div class="auth-footer" id="footer" style="display:none">
+        <a href="/login.html">← Zur Anmeldung</a>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/supabase.js"></script>
+  <script>
+    (function () {
+      const loadingState  = document.getElementById('loadingState');
+      const successState  = document.getElementById('successState');
+      const recoveryState = document.getElementById('recoveryState');
+      const errorState    = document.getElementById('errorState');
+      const footer        = document.getElementById('footer');
+      const alertEl       = document.getElementById('alert');
+      const recForm       = document.getElementById('recoveryForm');
+      const newPw         = document.getElementById('newPassword');
+      const setBtn        = document.getElementById('setPwBtn');
+      const setLb         = setBtn.querySelector('.btn-label');
+
+      const cfg = window.KLARBILL_CONFIG;
+      const params = new URLSearchParams(window.location.search);
+      const isRecovery = params.get('mode') === 'recovery';
+
+      function show(el) {
+        loadingState.style.display = 'none';
+        successState.style.display = 'none';
+        recoveryState.style.display = 'none';
+        errorState.style.display = 'none';
+        el.style.display = 'block';
+        footer.style.display = (el === recoveryState || el === errorState) ? 'block' : 'none';
+      }
+
+      function showAlert(kind, msg) {
+        alertEl.className = 'alert alert-' + kind + ' is-visible';
+        alertEl.textContent = msg;
+      }
+
+      // Listen for auth events triggered by detectSessionInUrl
+      window.klarbillAuth.onAuthStateChange(function (event) {
+        if (event === 'SIGNED_IN' && !isRecovery) {
+          show(successState);
+          setTimeout(function () { window.location.replace(cfg.APP_HOME); }, 900);
+        }
+        if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && isRecovery)) {
+          show(recoveryState);
+        }
+      });
+
+      // Recovery form
+      recForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (newPw.value.length < 8) {
+          showAlert('error', 'Passwort muss mindestens 8 Zeichen haben.');
+          return;
+        }
+        setBtn.disabled = true;
+        setLb.textContent = 'Speichern…';
+        const sp = document.createElement('span');
+        sp.className = 'spinner';
+        setBtn.insertBefore(sp, setLb);
+        try {
+          await window.klarbillAuth.updatePassword(newPw.value);
+          show(successState);
+          successState.querySelector('.status-title').textContent = 'Passwort aktualisiert';
+          successState.querySelector('.status-text').textContent = 'Du wirst weitergeleitet…';
+          setTimeout(function () { window.location.replace(cfg.APP_HOME); }, 900);
+        } catch (err) {
+          showAlert('error', window.klarbillAuth.friendlyError(err));
+          setBtn.disabled = false;
+          sp.remove();
+          setLb.textContent = 'Passwort speichern';
+        }
+      });
+
+      // Fallback: if no auth event fires within 4s, link is bad
+      setTimeout(async function () {
+        const session = await window.klarbillAuth.getSession();
+        if (!session && recoveryState.style.display === 'none' && successState.style.display === 'none') {
+          show(errorState);
+        }
+      }, 4000);
+    })();
+  </script>
+</body>
+</html>

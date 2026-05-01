@@ -34,11 +34,22 @@
     .input { width: 100%; height: 44px; background: white; border: 1px solid #E5E5E5; border-radius: 10px; padding: 0 14px; font-size: 14px; color: #0A0A0B; font-family: inherit; transition: all 0.15s; }
     .input:focus { outline: none; border-color: #0A0A0B; border-width: 1.5px; }
     .input::placeholder { color: #A3A3A3; }
+    .input[aria-invalid="true"] { border-color: #DC2626; }
     .helper { font-size: 12px; color: #737373; margin-top: 6px; line-height: 1.5; }
 
     /* Submit */
-    .submit-btn { width: 100%; height: 48px; background: #0A0A0B; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer; transition: all 0.15s; margin-top: 8px; }
-    .submit-btn:hover { background: #262626; }
+    .submit-btn { width: 100%; height: 48px; background: #0A0A0B; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer; transition: all 0.15s; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .submit-btn:hover:not(:disabled) { background: #262626; }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Spinner */
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Alerts */
+    .alert { padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5; margin-bottom: 16px; display: none; }
+    .alert.is-visible { display: block; }
+    .alert-error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
 
     /* Success state */
     .success-icon { width: 64px; height: 64px; background: #DCFCE7; border-radius: 16px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
@@ -51,16 +62,13 @@
 
     /* Resend */
     .resend-row { text-align: center; margin-top: 24px; font-size: 13px; color: #737373; }
-    .resend-row a { color: #0A0A0B; font-weight: 500; }
+    .resend-row a { color: #0A0A0B; font-weight: 500; cursor: pointer; }
 
     /* Footer link */
     .auth-footer { text-align: center; margin-top: 24px; font-size: 14px; color: #737373; }
     .auth-footer a { color: #0A0A0B; font-weight: 500; }
     .back-link { display: inline-flex; align-items: center; gap: 6px; color: #737373; font-size: 14px; margin-top: 16px; }
     .back-link:hover { color: #0A0A0B; }
-
-    /* State toggle (for demo) */
-    .state-toggle { position: fixed; bottom: 20px; right: 20px; background: #0A0A0B; color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
     /* Hide success by default */
     .success-state { display: none; }
@@ -103,15 +111,20 @@
         </div>
 
         <div class="auth-form">
-          <div class="field">
-            <label class="label" for="email">E-Mail</label>
-            <input type="email" id="email" class="input" placeholder="dein@email.de">
-            <p class="helper">Wir senden den Link an die E-Mail-Adresse deines Kontos.</p>
-          </div>
 
-          <button class="submit-btn" onclick="document.body.classList.add('success-mode')">
-            Link senden
-          </button>
+          <div id="alert" class="alert" role="alert" aria-live="polite"></div>
+
+          <form id="forgotForm" novalidate>
+            <div class="field">
+              <label class="label" for="email">E-Mail</label>
+              <input type="email" id="email" name="email" autocomplete="email" inputmode="email" class="input" placeholder="dein@email.de" required>
+              <p class="helper">Wir senden den Link an die E-Mail-Adresse deines Kontos.</p>
+            </div>
+
+            <button type="submit" id="submitBtn" class="submit-btn">
+              <span class="btn-label">Link senden</span>
+            </button>
+          </form>
         </div>
 
         <div class="auth-footer">
@@ -125,7 +138,7 @@
           <div class="success-icon">✉️</div>
 
           <h2>E-Mail wurde gesendet</h2>
-          <p>Wir haben einen Link zum Zurücksetzen deines Passworts an <strong>dein@email.de</strong> gesendet.</p>
+          <p>Wir haben einen Link zum Zurücksetzen deines Passworts an <strong id="successEmail">deine E-Mail</strong> gesendet.</p>
 
           <div class="success-note">
             <strong>Was jetzt?</strong>
@@ -133,7 +146,7 @@
           </div>
 
           <div class="resend-row">
-            E-Mail nicht erhalten? <a href="#" onclick="document.body.classList.remove('success-mode'); return false;">Erneut senden</a>
+            E-Mail nicht erhalten? <a id="resendLink">Erneut senden</a>
           </div>
         </div>
 
@@ -145,10 +158,80 @@
     </div>
   </main>
 
-  <!-- Demo state toggle (sənin testin üçün, sonra silərik) -->
-  <div class="state-toggle" onclick="document.body.classList.toggle('success-mode')">
-    🔄 State dəyiş (test üçün)
-  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/supabase.js"></script>
+  <script>
+    (function () {
+      const form     = document.getElementById('forgotForm');
+      const email    = document.getElementById('email');
+      const submit   = document.getElementById('submitBtn');
+      const alertEl  = document.getElementById('alert');
+      const successEmail = document.getElementById('successEmail');
+      const resendLink = document.getElementById('resendLink');
 
+      function showAlert(kind, msg) {
+        alertEl.className = 'alert alert-' + kind + ' is-visible';
+        alertEl.textContent = msg;
+      }
+      function hideAlert() {
+        alertEl.className = 'alert';
+        alertEl.textContent = '';
+      }
+      function setBusy(busy, label) {
+        submit.disabled = busy;
+        const lb = submit.querySelector('.btn-label');
+        if (busy) {
+          if (!submit.dataset.original) submit.dataset.original = lb.textContent;
+          lb.textContent = label;
+          if (!submit.querySelector('.spinner')) {
+            const sp = document.createElement('span');
+            sp.className = 'spinner';
+            submit.insertBefore(sp, lb);
+          }
+        } else {
+          if (submit.dataset.original) lb.textContent = submit.dataset.original;
+          const sp = submit.querySelector('.spinner');
+          if (sp) sp.remove();
+        }
+      }
+
+      async function sendReset(addr) {
+        try {
+          await window.klarbillAuth.resetPassword(addr);
+          successEmail.textContent = addr;
+          document.body.classList.add('success-mode');
+        } catch (err) {
+          showAlert('error', window.klarbillAuth.friendlyError(err));
+        }
+      }
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        hideAlert();
+
+        const addr = email.value.trim();
+        if (!window.klarbillAuth.isValidEmail(addr)) {
+          email.setAttribute('aria-invalid', 'true');
+          showAlert('error', 'Bitte gib eine gültige E-Mail-Adresse ein.');
+          return;
+        }
+        email.removeAttribute('aria-invalid');
+
+        setBusy(true, 'Wird gesendet…');
+        await sendReset(addr);
+        setBusy(false, '');
+      });
+
+      resendLink.addEventListener('click', async function (e) {
+        e.preventDefault();
+        const addr = successEmail.textContent;
+        if (addr && window.klarbillAuth.isValidEmail(addr)) {
+          await sendReset(addr);
+        } else {
+          document.body.classList.remove('success-mode');
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
