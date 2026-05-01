@@ -87,7 +87,22 @@
     .cta-section { background: #0A0A0B; color: white; padding: 80px 24px; text-align: center; border-radius: 24px; margin: 60px 0; }
     .cta-section h2 { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 16px; }
     .cta-section p { color: #A3A3A3; font-size: 16px; margin-bottom: 32px; }
-    .btn-white { background: white; color: #0A0A0B; padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 500; display: inline-block; }
+    .btn-white {
+      background: white;
+      color: #0A0A0B;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3); }
+    .btn-white:active { transform: translateY(0); transition-duration: 0.1s; }
 
     /* Footer */
     footer { padding: 40px 0; border-top: 1px solid #E5E5E5; }

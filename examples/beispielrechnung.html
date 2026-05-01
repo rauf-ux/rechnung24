@@ -32,10 +32,40 @@
     .toolbar-title { font-size: 14px; color: #737373; }
     .toolbar-title strong { color: #0A0A0B; font-weight: 600; }
     .toolbar-actions { display: flex; gap: 8px; }
-    .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; border: 1px solid #E5E5E5; background: white; color: #0A0A0B; cursor: pointer; font-family: inherit; transition: all 0.15s; }
-    .btn:hover { background: #FAFAFA; border-color: #0A0A0B; }
-    .btn-primary { background: #0A0A0B; color: white; border-color: #0A0A0B; }
-    .btn-primary:hover { background: #262626; }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid #E5E5E5;
+      background: white;
+      color: #0A0A0B;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .btn:hover {
+      border-color: #9e005d;
+      color: #9e005d;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(158, 0, 93, 0.12);
+    }
+    .btn:active { transform: translateY(0); transition-duration: 0.1s; }
+    .btn-primary {
+      background: linear-gradient(135deg, #9e005d 0%, #b8006d 100%);
+      color: white !important;
+      border-color: transparent;
+      box-shadow: 0 2px 8px rgba(158, 0, 93, 0.3),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(158, 0, 93, 0.45),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      border-color: transparent;
+    }
 
     /* ----------------------------------------------------------
        Page wrapper — A4 paper feel
