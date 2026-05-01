@@ -2,7 +2,7 @@
 
 > **Resume protocol:** read this file first when starting a new session. Update at the end of each session.
 
-**Last updated:** 2026-05-01 (terminal workflow live)
+**Last updated:** 2026-05-01 (brand audit complete)
 
 ## Setup state
 
@@ -10,14 +10,17 @@
 - ✅ **Cowork workspace:** mounted on lokal repo (Drive folder is now archive only)
 - ✅ **Git identity:** Rauf / rauf@investaz.az — commits work
 - ✅ **Logo:** klarbill wordmark live on klarbill.de (top-bar + footer/sidebar across 18 pages)
-- ⏳ **i-dot fix** — pushed locally, awaiting commit + push (or already done — check `git log`)
+- ✅ **i-dot fix:** pushed (commit `ea0f650`)
+- ✅ **Brand copy:** all user-facing HTML now says "Klarbill" (51 swaps across 18 root files + 8 in `_supabase-ready/`)
 
 ## Active
 
 - [ ] **`deploy.sh` helper script** — `TERMINAL-SETUP.md` Faza 5 (one-line deploy)
-- [ ] **Brand audit (Rechnung24 → klarbill)** — logo is klarbill but `<title>`, `<meta description>`, footer text and 55 other text mentions still say "Rechnung24" across 18 files
 - [ ] **Favicon** — generate compact icon (just "k" or "kb"), add `<link rel="icon" type="image/svg+xml" href="/logo.svg">` to all pages
 - [ ] **Open Graph image** — 1200×630 social share preview (logo + tagline)
+- [ ] **Rename GitHub repo `rechnung24` → `klarbill`** — then update `README.md` + `docs/06-tech.md` URLs (currently still point to `github.com/rauf-ux/rechnung24`)
+- [ ] **`DEPLOY.md` brand cleanup** — update Supabase "App name" config + email-template strings to match Klarbill (do this together with actual Supabase config update at auth go-live)
+- [ ] **`impressum.html` real legal data** — replace placeholders ("Rauf [Nachname]", "Musterstraße 1", "85290 Geisenfeld", VAT-ID `[wird ergänzt]`) with real values before public launch
 - [ ] **Auth — go-live** *(skipped per user request)* — when ready, restore `_supabase-ready/*.html` to root, add Supabase keys, see `DEPLOY.md` + `docs/07-auth-setup.md`
 - [ ] **Design-system audit** — extract spacing scale + radii from existing HTML, formalize into `docs/02-design-system.md`
 - [ ] **Market validation** — outreach on LinkedIn + r/selbststaendig
@@ -53,19 +56,16 @@ Daily loop:
    (or `./deploy.sh "msg"` once Faza 5 is set up)
 3. Vercel auto-deploys → klarbill.de
 
-## Last Session Summary (2026-05-01)
+## Last Session Summary (2026-05-01, late)
 
-- **Logo rolled out site-wide** — replaced fake "R" placeholder with real klarbill wordmark SVG (qara "klar" + macenta "bill") across 19 HTML files (29 instances: top-bar, sidebar, footer). 32px height for primary, 28px for footer.
-- **Discovered + fixed i-dot rendering bug** — original SVG combined the dot and i-body into a single `<path>` with `ZM` subpath syntax. Some browsers clipped the dot. Split into separate `<circle>` + `<path>` (33 replacements across 23 HTML files + logo.svg).
-- **Migrated from Drive workflow to terminal-based** — installed Homebrew + gh CLI on user's Mac, authenticated GitHub, cloned repo to `~/Projects/klarbill/`, consolidated Drive contents (HTML + docs + db + _supabase-ready + README + CHANGELOG + DEPLOY guides) into the repo.
-- **First terminal-driven push:** 39 files, 3522 insertions, +113 deletions. Vercel auto-deploy successful.
-- Cowork workspace switched to lokal repo — Claude no longer needs to fetch from GitHub each session (~95% token savings).
-- Auth pages (`signup`, `login`, `forgot`) reverted to logo-only versions; Supabase-wired versions backed up to `_supabase-ready/`.
+- **Brand audit complete (Rechnung24 → Klarbill).** Single sed pass on all 18 root `*.html` files swapped 51 user-facing occurrences: page titles, meta descriptions, footer copyright, FAQ + features inline prose, welcome `<h1>`, and the impressum `<strong>` legal-name placeholder. Same pass applied to 4 `_supabase-ready/*.html` auth backups (8 swaps) so they stay consistent for restore. Contact email updated `hallo@rechnung24.de` → `hallo@klarbill.de`. Convention: capitalized **Klarbill** in prose/titles, lowercase `klarbill` reserved for the wordmark and domain (matches `README.md`).
+- **Verification:** repo-wide `grep -i rechnung24` confirmed zero stray matches in production HTML. Spot-checked titles, footers, meta descriptions, impressum block. HTML structure intact (html/body tags balanced across all 19 files).
+- **Out-of-scope but flagged as new Active items:** GitHub repo rename (`rechnung24` → `klarbill` — affects `README.md` + `docs/06-tech.md` URLs), `DEPLOY.md` Supabase + email-template strings, and replacing placeholder legal data in `impressum.html`.
 
 ## Next Session — Start Here
 
 1. Open this file.
 2. Run `git log --oneline -5` to see recent commits.
-3. Pick top "Active" item — likely candidates: brand audit (Rechnung24→klarbill), favicon, or `deploy.sh`.
+3. Pick top "Active" item — likely candidates now: **`deploy.sh`** (smallest, biggest dev-loop win), then **favicon + OG image** (brand-visible, ships together).
 4. Do the work.
-5. Before closing: update **Last Session Summary** + move completed items to `CHANGELOG.md`.
+5. Before closing: update **Last Session Summary** + add a `CHANGELOG.md` entry.

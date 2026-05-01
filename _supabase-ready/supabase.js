@@ -1,5 +1,5 @@
 // ============================================================================
-// supabase.js — Klarbill (rechnung24) auth wrapper
+// supabase.js — Klarbill auth wrapper
 // ----------------------------------------------------------------------------
 // Single shared file for all auth pages. Loaded after the Supabase CDN script.
 // Edit the two PLACEHOLDER values below before the first deploy.

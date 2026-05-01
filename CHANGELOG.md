@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-01 (later)
+
+- **Brand audit: Rechnung24 → Klarbill** — completed user-facing rename across all production HTML. Swept 51 occurrences in 18 root files (`<title>`, `<meta name="description">`, footer copyright, FAQ + features prose, welcome `<h1>`, impressum `<strong>` legal-name placeholder) plus 8 in `_supabase-ready/` auth backups. Convention adopted: capitalized **Klarbill** in prose/titles, lowercase `klarbill` reserved for the wordmark and domain (matches `README.md`). Contact email updated `hallo@rechnung24.de` → `hallo@klarbill.de` in impressum. Cleaned up legacy comment in `_supabase-ready/supabase.js`. HTML structural sanity verified — all html/body tags balanced. **Out of scope (follow-ups):** GitHub repo URL still `github.com/rauf-ux/rechnung24` (rename repo on GitHub first, then update `README.md` + `docs/06-tech.md`); `DEPLOY.md` Supabase project name + email-template strings (update alongside actual Supabase config when auth goes live); placeholder legal data in `impressum.html` ("Musterstraße", "[Nachname]") still needs real values before public launch.
+
 ## 2026-05-01
 
 - **Migrated to terminal-based workflow** — installed Homebrew + gh CLI on user's Mac, authenticated with GitHub (rauf-ux), set git identity, cloned repo to `~/Projects/klarbill/`, consolidated entire Drive folder into the repo (HTML pages, docs/, db/, _supabase-ready/, README, CHANGELOG, DEPLOY guides, logo.svg). First terminal-driven push: 39 files, 3522 insertions, +113 deletions. Drive folder demoted to archive only. Cowork workspace switched to lokal repo — Claude no longer needs to fetch from GitHub each session (~95% token savings going forward).
