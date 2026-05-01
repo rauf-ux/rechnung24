@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-05-01 (logo refresh)
+
+- **Wordmark updated to v2 — `KlarBill.` (capital K + B, ending period).** New SVG (viewBox `0 0 215.91 43.85`, was `0 0 180.52 44.96`) — bolder strokes (vertical bar 7.61 wide, was 4.99), capital K and B glyphs replacing lowercase k and b, square dot replacing the round i-dot circle, and a final period accent in magenta. Aspect ratio went from 4.01:1 to 4.92:1 (~23% wider) — fits comfortably in existing nav and footer slots without overflow.
+- **22 SVG instances replaced site-wide via Python regex script.** Production: 14 instances across 7 marketing HTML pages (each has nav + footer instance), 1 in `examples/beispielrechnung.html`, 3 in SPA layouts (`AppLayout.tsx`, `AuthLayout.tsx`, `OnboardingLayout.tsx`). Backups: 4 in `_supabase-ready/{login,signup,forgot,callback}.html` (kept consistent for future restore reference). Plus standalone `logo.svg` at repo root rewritten to use semantic `aria-label="KlarBill"` and inline `fill` attributes (no more `<defs><style>` block — cleaner for embedding).
+- **Brand naming convention unchanged in copy.** Wordmark is `KlarBill.` (with caps + period), but written/typed brand name in titles, meta, prose, and copy stays **Klarbill** (single cap, no period) — matches `README.md` precedent and preserves all existing site content. The wordmark and the typed name diverge intentionally, like `iPhone` (typed) vs. the actual Apple logo.
+
 ## 2026-05-01 (homepage refactor — Resend-inspired)
 
 - **`index.html` rewritten in Resend-inspired style.** Type-driven, light/dark/light/dark/gradient section rhythm, animated form-to-PDF preview in hero (pure CSS — no JS deps, infinite 8s loop). Sections: light hero with split-panel demo → dark "How it works" 3-step grid → light Features grid (6 cards, hover lift) → dark XRechnung XML showcase with syntax-coloured `<Invoice>` snippet → dark gradient final CTA → light footer. Inter for body, JetBrains Mono for invoice numbers and code blocks.
