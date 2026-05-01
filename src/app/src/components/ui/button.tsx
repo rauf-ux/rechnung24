@@ -8,21 +8,25 @@ import { cn } from '@/lib/utils';
 // reserved for the "bill" half of the brand). `ghost` = subtle, for nav items.
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0',
+  // Spring-eased transitions match the marketing-site CTAs.
+  // [&_svg]:transition-transform → arrow icons can slide on hover via per-variant rule.
+  'relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[transform,box-shadow,background-color,color] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:translate-y-0 active:duration-100 [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:transition-transform',
   {
     variants: {
       variant: {
+        // Primary = magenta (after token swap). Lift + magenta shadow expands on hover. Trailing arrow slides.
         default:
-          'bg-primary text-primary-foreground hover:bg-primary/90',
+          'bg-primary text-primary-foreground shadow-[0_4px_14px_-2px_hsl(326_100%_31%/0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-4px_hsl(326_100%_31%/0.5)] hover:bg-primary/95 hover:[&_svg:last-child]:translate-x-0.5',
+        // Secondary = charcoal. Subtle dark shadow.
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/90',
+          'bg-secondary text-secondary-foreground shadow-[0_4px_14px_-2px_rgba(10,10,11,0.18)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-4px_rgba(10,10,11,0.28)] hover:bg-secondary/90 hover:[&_svg:last-child]:translate-x-0.5',
         outline:
-          'border border-input bg-background text-foreground hover:bg-muted',
+          'border border-input bg-background text-foreground hover:-translate-y-0.5 hover:border-primary hover:text-primary hover:shadow-[0_8px_20px_-4px_hsl(326_100%_31%/0.15)]',
         ghost:
           'text-muted-foreground hover:bg-muted hover:text-foreground',
         link: 'text-foreground underline-offset-4 hover:underline',
         destructive:
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+          'bg-destructive text-destructive-foreground shadow-[0_4px_14px_-2px_rgba(220,38,38,0.3)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-4px_rgba(220,38,38,0.4)] hover:bg-destructive/95',
       },
       size: {
         default: 'h-10 px-4 py-2',

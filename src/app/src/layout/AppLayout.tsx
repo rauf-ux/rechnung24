@@ -39,7 +39,6 @@ export function AppLayout() {
           <div className="px-3 py-3">
             <Button
               asChild
-              variant="secondary"
               className="w-full justify-start"
             >
               <NavLink to="/invoices/new">
@@ -89,7 +88,7 @@ export function AppLayout() {
         <div className="flex-1 min-w-0">
           <header className="md:hidden flex items-center justify-between border-b border-border bg-card px-4 py-3 sticky top-0 z-10">
             <Wordmark height={24} />
-            <Button asChild variant="secondary" size="sm">
+            <Button asChild size="sm">
               <NavLink to="/invoices/new">
                 <Plus />
                 Neu

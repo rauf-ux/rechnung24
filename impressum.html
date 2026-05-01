@@ -19,8 +19,18 @@
     .nav-links { display: flex; gap: 4px; align-items: center; }
     .nav-links a { padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #525252; transition: all 0.15s; }
     .nav-links a:hover { background: white; color: #0A0A0B; }
-    .nav-cta { background: #0A0A0B !important; color: white !important; margin-left: 8px; }
-    .nav-cta:hover { background: #262626 !important; }
+    .nav-cta {
+      background: linear-gradient(135deg, #9e005d 0%, #b8006d 100%) !important;
+      color: white !important;
+      margin-left: 8px;
+      box-shadow: 0 2px 8px rgba(158, 0, 93, 0.25);
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s !important;
+    }
+    .nav-cta:hover {
+      background: linear-gradient(135deg, #b8006d 0%, #c9006f 100%) !important;
+      box-shadow: 0 6px 16px rgba(158, 0, 93, 0.4) !important;
+      transform: translateY(-1px);
+    }
 
     /* Hamburger */
     .hamburger { display: none; width: 40px; height: 40px; border-radius: 8px; background: white; border: 1px solid #E5E5E5; cursor: pointer; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }

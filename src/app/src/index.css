@@ -25,10 +25,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 9% 4%;
 
-    --primary: 240 9% 4%;              /* charcoal — buttons, focus */
+    --primary: 326 100% 31%;           /* magenta — main CTA color (was charcoal) */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 326 100% 31%;         /* magenta — secondary CTAs, accents */
+    --secondary: 240 9% 4%;            /* charcoal — secondary surface (was magenta) */
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 96%;                 /* #F5F5F5 */
@@ -42,7 +42,7 @@
 
     --border: 0 0% 90%;                /* #E5E5E5 */
     --input: 0 0% 90%;
-    --ring: 240 9% 4%;
+    --ring: 326 100% 31%;              /* focus ring follows primary (was charcoal) */
 
     --radius: 10px;
   }

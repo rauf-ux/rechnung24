@@ -21,6 +21,7 @@
 - ✅ **Mock auth in place.** `useSession()` returns `{ user: null }` by default; `?dev-user=1` URL param simulates a logged-in user for layout development.
 - ✅ **Homepage refactored Resend-style.** New `index.html` with light/dark section rhythm, animated form-to-PDF preview hero (CSS-only), XRechnung XML showcase, dark gradient final CTA. New `/examples/beispielrechnung.html` — A4 sample invoice users can preview/print without signing up. Positioning fixes baked in (no more "GoBD-konform" lie, no €9.90 tier, "Private Beta · kostenlos" badge).
 - ✅ **Wordmark v2 — `KlarBill.` (cap K + B + ending period).** New SVG (215.91×43.85, was 180.52×44.96), bolder strokes, square i-dot, magenta period accent. 22 SVG instances replaced site-wide (production HTML, SPA TSX layouts, `_supabase-ready/` backups, standalone `logo.svg`). Wordmark and typed brand name diverge: visual = `KlarBill.`, prose = `Klarbill`.
+- ✅ **Buttons → magenta gradient + modern hover (site-wide).** Primary CTAs went from charcoal to `linear-gradient(135deg, #9e005d, #b8006d)`. Hover dynamics: spring easing, magenta-tinted shadow expand, arrow slide, shine sweep on `index.html`. SPA token swap: `--primary` is now magenta, `--secondary` is now charcoal — every shadcn `<Button>` (default variant) is magenta. AppLayout, dashboard, invoices/list "Neue Rechnung" CTAs migrated from `variant="secondary"` to default.
 
 ## Active (Phase 1 — Auth + Generator inside the SPA)
 

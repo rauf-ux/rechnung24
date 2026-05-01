@@ -5,7 +5,7 @@ import { Check } from 'lucide-react';
 export function DonePage() {
   return (
     <div className="text-center space-y-6">
-      <div className="size-16 mx-auto rounded-full bg-secondary text-secondary-foreground flex items-center justify-center">
+      <div className="size-16 mx-auto rounded-full bg-primary text-primary-foreground flex items-center justify-center">
         <Check className="size-8" />
       </div>
       <div className="space-y-2">

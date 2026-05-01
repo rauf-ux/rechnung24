@@ -31,7 +31,7 @@ export function DashboardPage() {
           <CardDescription>Die wichtigsten Aktionen.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-3">
-          <Button asChild variant="secondary" className="h-auto py-4 flex-col items-start gap-2">
+          <Button asChild className="h-auto py-4 flex-col items-start gap-2">
             <Link to="/invoices/new">
               <Plus className="size-5" />
               <span className="text-left">

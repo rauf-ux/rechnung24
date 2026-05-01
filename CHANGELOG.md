@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-01 (button redesign — magenta primary + modern hover)
+
+- **Primary CTAs swapped from charcoal to magenta gradient** (`#9e005d → #b8006d`). Brand reasoning: the magenta is the wordmark's "bill" color — using it as the primary CTA color makes the button visually echo the logo and gives the dark-on-light marketing pages a single high-energy focal point.
+- **Modern hover dynamics applied across all CTAs.** Spring easing (`cubic-bezier(0.34, 1.56, 0.64, 1)`) for satisfying overshoot, magenta-tinted shadow that expands on hover (4px→12px y-offset, 0.3→0.45 opacity), arrow-icon slide (`translateX(3px)`), and on `index.html` primary button a diagonal shine sweep via `::before` pseudo-element. `:active` collapses lift back to 0 with shorter 100ms duration for tactile feedback.
+- **Marketing HTML updates:** `index.html` got the full treatment (`.btn-primary`, `.btn-secondary`, `.btn-white`, `.nav-cta` all redesigned). `pricing.html`, `features.html`, `faq.html`, `impressum.html`, `agb.html`, `datenschutz.html` got the lighter `.nav-cta` magenta-gradient update via Python script (only nav button on those pages).
+- **SPA token swap.** In `src/app/src/index.css`, swapped `--primary` and `--secondary` HSL values: `--primary` is now magenta `326 100% 31%` (was charcoal), `--secondary` is now charcoal `240 9% 4%` (was magenta), `--ring` follows primary so focus outlines are magenta. This means every shadcn `<Button>` (default variant) is now magenta out of the box.
+- **shadcn `Button` component upgraded.** Added spring-eased shadow + lift + arrow slide via Tailwind arbitrary-value classes. The magenta shadow is hardcoded with `hsl(326 100% 31% / 0.5)` to ensure it follows the brand colour even if shadow utilities don't compose with CSS variables. `[&_svg:last-child]:translate-x-0.5` slides only the trailing icon (typical "go arrow" pattern), not leading icons.
+- **`variant="secondary"` usages migrated to default** where the intent was "primary brand action" (e.g. AppLayout sidebar "Neue Rechnung", mobile "Neu", dashboard schnellstart card, invoices/list "Neue Rechnung" header CTA). Done page success badge swapped from `bg-secondary` to `bg-primary` for the same reason. Anywhere `variant="secondary"` survives is now intentional charcoal.
+
 ## 2026-05-01 (logo refresh)
 
 - **Wordmark updated to v2 — `KlarBill.` (capital K + B, ending period).** New SVG (viewBox `0 0 215.91 43.85`, was `0 0 180.52 44.96`) — bolder strokes (vertical bar 7.61 wide, was 4.99), capital K and B glyphs replacing lowercase k and b, square dot replacing the round i-dot circle, and a final period accent in magenta. Aspect ratio went from 4.01:1 to 4.92:1 (~23% wider) — fits comfortably in existing nav and footer slots without overflow.

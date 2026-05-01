@@ -13,7 +13,7 @@ export function InvoicesListPage() {
             Erstellte Rechnungen werden hier nicht gespeichert. Klarbill hilft beim Erzeugen, deine Archivierung erfolgt lokal.
           </p>
         </div>
-        <Button asChild variant="secondary">
+        <Button asChild>
           <Link to="/invoices/new">
             <Plus />
             Neue Rechnung
