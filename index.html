@@ -264,6 +264,20 @@
     .cta-section:hover::after { opacity: 1; }
     .cta-section > * { position: relative; }
     .cta-section h2 { font-size: 48px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 16px; }
+    /* Countdown — animates 60 → 0 once when CTA scrolls into view */
+    .cta-section .countdown {
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum';
+      min-width: 1.5em;
+      text-align: center;
+      transition: color 0.25s ease, transform 0.25s ease;
+    }
+    .cta-section .countdown.is-running { color: #ffb3d8; }
+    .cta-section .countdown.is-zero {
+      color: #ff4d9e;
+      transform: scale(1.15);
+    }
     .cta-section p { color: rgba(255, 255, 255, 0.7); font-size: 17px; margin-bottom: 32px; }
     .btn-white { background: white; color: #0A0A0B; padding: 16px 32px; border-radius: 10px; font-size: 15px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.15s; }
     .btn-white:hover { transform: translateY(-2px); }
@@ -585,7 +599,7 @@
 
   <div class="container">
     <section class="cta-section">
-      <h2>Erste Rechnung in 60 Sekunden.</h2>
+      <h2>Erste Rechnung in <span class="countdown" data-target="60">60</span> Sekunden.</h2>
       <p>Private Beta — kostenlos. Keine Kreditkarte erforderlich.</p>
       <a href="/app/signup" class="btn-white">
         Jetzt loslegen
@@ -630,12 +644,14 @@
   </div>
 
   <!-- ============================================================
-       CTA spotlight — follows cursor inside the dark gradient block
+       CTA interactions — spotlight + one-shot countdown
   ============================================================ -->
   <script>
     (function () {
       const cta = document.querySelector('.cta-section');
       if (!cta) return;
+
+      // (1) Cursor-following spotlight (CSS variables)
       cta.addEventListener('mousemove', (e) => {
         const rect = cta.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -643,6 +659,46 @@
         cta.style.setProperty('--mouse-x', x + '%');
         cta.style.setProperty('--mouse-y', y + '%');
       });
+
+      // (2) "60 Sekunden" countdown — runs once when CTA enters viewport.
+      //     Visualizes "60 seconds is short" by counting down 60→0 in ~2s.
+      //     Uses tabular-nums to avoid layout shift between digit-widths.
+      const num = cta.querySelector('.countdown');
+      if (num && 'IntersectionObserver' in window) {
+        let started = false;
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting || started) return;
+            started = true;
+            observer.disconnect();
+
+            // Initial pause: let the eye read "in 60 Sekunden" once.
+            setTimeout(() => {
+              num.classList.add('is-running');
+              let current = 60;
+              const tickRate = 32; // ms per decrement → 60×32 ≈ 2s
+
+              const step = () => {
+                current--;
+                num.textContent = current;
+                if (current === 0) {
+                  num.classList.remove('is-running');
+                  num.classList.add('is-zero');
+                  // Settle back to "60" after a beat — leaves the slogan readable.
+                  setTimeout(() => {
+                    num.classList.remove('is-zero');
+                    num.textContent = '60';
+                  }, 1200);
+                  return;
+                }
+                setTimeout(step, tickRate);
+              };
+              setTimeout(step, tickRate);
+            }, 1400);
+          });
+        }, { threshold: 0.4 });
+        observer.observe(cta);
+      }
     })();
   </script>
 
