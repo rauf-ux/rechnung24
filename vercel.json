@@ -11,18 +11,32 @@
 
   "redirects": [
     { "source": "/login", "destination": "/app/login", "permanent": false },
+    { "source": "/login.html", "destination": "/app/login", "permanent": false },
     { "source": "/signup", "destination": "/app/signup", "permanent": false },
+    { "source": "/signup.html", "destination": "/app/signup", "permanent": false },
     { "source": "/forgot", "destination": "/app/forgot", "permanent": false },
+    { "source": "/forgot.html", "destination": "/app/forgot", "permanent": false },
     { "source": "/callback", "destination": "/app/callback", "permanent": false },
+    { "source": "/callback.html", "destination": "/app/callback", "permanent": false },
     { "source": "/welcome", "destination": "/app/welcome", "permanent": false },
+    { "source": "/welcome.html", "destination": "/app/welcome", "permanent": false },
     { "source": "/done", "destination": "/app/done", "permanent": false },
+    { "source": "/done.html", "destination": "/app/done", "permanent": false },
     { "source": "/dashboard", "destination": "/app/dashboard", "permanent": false },
+    { "source": "/dashboard.html", "destination": "/app/dashboard", "permanent": false },
     { "source": "/invoices", "destination": "/app/invoices", "permanent": false },
+    { "source": "/invoices.html", "destination": "/app/invoices", "permanent": false },
     { "source": "/clients", "destination": "/app/clients", "permanent": false },
+    { "source": "/clients.html", "destination": "/app/clients", "permanent": false },
     { "source": "/settings", "destination": "/app/settings", "permanent": false },
+    { "source": "/settings.html", "destination": "/app/settings", "permanent": false },
     { "source": "/invoice-new", "destination": "/app/invoices/new", "permanent": false },
+    { "source": "/invoice-new.html", "destination": "/app/invoices/new", "permanent": false },
     { "source": "/onboarding-1", "destination": "/app/onboarding/1", "permanent": false },
+    { "source": "/onboarding-1.html", "destination": "/app/onboarding/1", "permanent": false },
     { "source": "/onboarding-2", "destination": "/app/onboarding/2", "permanent": false },
-    { "source": "/onboarding-3", "destination": "/app/onboarding/3", "permanent": false }
+    { "source": "/onboarding-2.html", "destination": "/app/onboarding/2", "permanent": false },
+    { "source": "/onboarding-3", "destination": "/app/onboarding/3", "permanent": false },
+    { "source": "/onboarding-3.html", "destination": "/app/onboarding/3", "permanent": false }
   ]
 }
