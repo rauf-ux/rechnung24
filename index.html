@@ -234,13 +234,34 @@
       max-width: 1100px;
       position: relative;
       overflow: hidden;
+      /* Defaults for spotlight position — center until cursor enters */
+      --mouse-x: 50%;
+      --mouse-y: 50%;
     }
+    /* Static corner glow — always visible, fixed position */
     .cta-section::before {
       content: "";
       position: absolute;
       inset: 0;
       background-image: radial-gradient(circle at 20% 80%, rgba(158, 0, 93, 0.4) 0%, transparent 40%);
+      pointer-events: none;
     }
+    /* Mouse-following spotlight — fades in on hover, follows cursor */
+    .cta-section::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        500px circle at var(--mouse-x) var(--mouse-y),
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, 0.04) 25%,
+        transparent 50%
+      );
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .cta-section:hover::after { opacity: 1; }
     .cta-section > * { position: relative; }
     .cta-section h2 { font-size: 48px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 16px; }
     .cta-section p { color: rgba(255, 255, 255, 0.7); font-size: 17px; margin-bottom: 32px; }
@@ -625,6 +646,23 @@
     </footer>
 
   </div>
+
+  <!-- ============================================================
+       CTA spotlight — follows cursor inside the dark gradient block
+  ============================================================ -->
+  <script>
+    (function () {
+      const cta = document.querySelector('.cta-section');
+      if (!cta) return;
+      cta.addEventListener('mousemove', (e) => {
+        const rect = cta.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        cta.style.setProperty('--mouse-x', x + '%');
+        cta.style.setProperty('--mouse-y', y + '%');
+      });
+    })();
+  </script>
 
 </body>
 </html>
