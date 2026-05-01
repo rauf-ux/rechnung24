@@ -1,77 +1,139 @@
 # Tech Stack
 
-> See [`00-strategy.md`](00-strategy.md). The stack is sized for the **template-tool** positioning: low cost, low operational complexity, no service-tier obligations.
+> See [`00-strategy.md`](00-strategy.md). The stack is sized for the **template-tool** positioning: low cost, low operational complexity, no service-tier obligations. Two surfaces, two stacks — see the boundary section below.
 
-## Current — Phase 1 stack
+## Phase 1 stack — at a glance
 
 ```
-Marketing pages: Static HTML + inline CSS + minimal vanilla JS
-Invoice generator: React island (Vite-bundled) mounted on invoice-new.html
-Auth pages: Vanilla HTML + Supabase JS SDK from CDN
+Marketing pages (7): static HTML + inline CSS + minimal vanilla JS
+App surface (/app/*): Vite-React SPA with TypeScript
+Auth: Supabase JS SDK (called from inside the SPA)
 Backend: Supabase free tier (Auth + Postgres for profiles + clients only)
 Hosting: Vercel free tier (klarbill.de)
 Domain: klarbill.de
-Repo: github.com/rauf-ux/rechnung24 (rename to klarbill pending)
+Repo: github.com/rauf-ux/klarbill
 ```
 
-**No Resend, no DATEV, no Stripe, no server-side rendering, no Next.js — none of it is needed for Phase 1.**
+**No Resend, no DATEV, no Stripe, no SSR, no Next.js — none of it is needed for Phase 1.**
 
-## Why a React island instead of a full SPA or Next.js
+## The boundary: marketing vs. app
 
-The 18 marketing pages don't need React — they're static, indexed by Google as-is, and load fast. Migrating them adds work and removes value.
+| Concern | Marketing | App (`/app/*`) |
+|---|---|---|
+| Pages | `index.html`, `pricing.html`, `features.html`, `faq.html`, `impressum.html`, `agb.html`, `datenschutz.html` | login, signup, forgot, callback, onboarding/1..3, welcome, done, dashboard, invoices, invoices/new, clients, settings |
+| Stack | Static HTML + inline CSS + minimal JS | Vite + React 18 + TypeScript |
+| Routing | Direct file paths (`pricing.html`) | `react-router-dom` client-side |
+| Layout sharing | None — each page is self-contained, edits via sed when needed | Single `<AppLayout>` component |
+| State | None | React state + localStorage for drafts |
+| Build | None — files served as-is | `vite build` produces single bundle |
+| SEO | Important (Google index) | Irrelevant (auth-gated) |
 
-The one place that benefits from React is the invoice generator: a multi-step form with cross-field validation, line-item arrays, live preview, §19 toggle that mutates VAT calculations, and PDF/XML output. That's the spot where vanilla JS gets painful and React earns its keep.
+## App SPA — package layout
 
-So: leave the marketing site alone, build a single React component, mount it on `invoice-new.html`, ship.
+The Vite scaffold currently lives at `src/generator/`. It will be renamed `src/app/` once it grows beyond the invoice generator (next session). Eventual layout:
 
-## Why Vite (not Next.js)
+```
+src/app/
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── index.html             ← single HTML shell, mounted at /app/index.html on prod
+└── src/
+    ├── main.tsx           ← React mount + Router setup
+    ├── App.tsx            ← Top-level routes
+    ├── routes/
+    │   ├── login.tsx, signup.tsx, forgot.tsx, callback.tsx
+    │   ├── onboarding/1.tsx, 2.tsx, 3.tsx
+    │   ├── welcome.tsx, done.tsx
+    │   ├── dashboard.tsx
+    │   ├── invoices/index.tsx, new.tsx
+    │   ├── clients.tsx
+    │   └── settings.tsx
+    ├── layout/
+    │   ├── AppLayout.tsx    ← sidebar + topbar + outlet
+    │   ├── AuthLayout.tsx   ← centered card for login/signup
+    │   └── ProtectedRoute.tsx
+    ├── auth/
+    │   ├── supabase.ts      ← client init
+    │   └── useSession.ts    ← session hook + redirect-on-logout
+    ├── lib/
+    │   ├── pdf.ts           ← jsPDF rendering for invoices
+    │   ├── xrechnung.ts     ← XML serialization
+    │   └── calc.ts          ← VAT/€19/totals
+    ├── components/
+    │   ├── ui/              ← shadcn/ui or hand-rolled primitives
+    │   └── ...              ← feature-specific components
+    └── styles/
+        └── globals.css
+```
 
-For a single React component on one page, Next.js is overkill — it brings SSR, file-based routing, middleware, image optimization, and an opinionated build pipeline. None of it is needed.
+## Why these specific choices
 
-Vite gives a simple `npm run build` that produces one JS bundle and one CSS file. Drop the bundle into `invoice-new.html` via a `<script type="module" src="/dist/generator.js">` tag. Vercel serves it. Done.
+**Vite (not Next.js, not Webpack).** Single-page apps don't need SSR or file-system routing. Vite gives a sub-second dev loop, sub-megabyte production bundles, and zero ceremony.
 
-If Phase 2 validation justifies a full SPA, migration from a Vite React island to Next.js or a Vite SPA is a few days, not weeks.
+**react-router-dom v6 (not TanStack Router).** Boring, ubiquitous, well-documented. v6 has the `loader`/`action` API that pairs cleanly with Supabase data fetching when we get there.
+
+**Supabase JS SDK (no @supabase/ssr).** SSR helpers are unnecessary on a client-side SPA. The plain `@supabase/supabase-js` client handles auth, RLS-protected queries, and realtime — that's all we need.
+
+**TypeScript strict mode.** German tax data (Steuernummer formats, USt-IdNr country prefixes, §19 status, VAT rates as a discriminated union) is exactly the kind of domain that benefits from compile-time enforcement.
+
+**Component library: shadcn/ui (provisional, decision pending).** Copy-paste model, owns the source, no runtime dependency. Tailwind-based, but we can use the unstyled Radix primitives if we want to keep our existing Inter/two-tone palette and CSS-in-files style. Alternative: hand-rolled primitives to match the existing static-page look exactly. To be decided when SPA work begins.
+
+**No state management library.** `useState` + `useReducer` + React Router's loaders are enough for Phase 1. Add Zustand only if a clear cross-route shared state emerges.
+
+**No form library yet.** Native HTML5 validation + per-field controlled inputs + a small custom helper. Add `react-hook-form` + `zod` only if forms become unwieldy (likely once the generator grows).
+
+## Vercel deployment
+
+A single `vercel.json` at repo root configures both surfaces:
+
+```jsonc
+{
+  // Build the SPA bundle before deploy. Marketing HTML is served as-is.
+  "buildCommand": "cd src/app && npm install && npm run build",
+  "outputDirectory": ".",
+
+  // SPA fallback: any /app/* URL not matching a real file routes to the SPA shell.
+  "rewrites": [
+    { "source": "/app/:path*", "destination": "/app/index.html" }
+  ]
+}
+```
+
+Vite is configured (`vite.config.ts`) to write the production bundle to `<repo-root>/app/`, mirroring the URL structure. Marketing HTML files at repo root are unaffected.
 
 ## Local Development
 
 ```bash
-git clone https://github.com/rauf-ux/rechnung24.git   # rename pending
-cd rechnung24
-
-# Static server for marketing pages
+# Marketing pages — open in any static server
 python3 -m http.server 8000
-# or
-npx serve .
+open http://localhost:8000
 
-# When the generator exists:
-cd src/generator && npm install && npm run dev
+# App surface — Vite dev server with hot reload
+cd src/app
+npm install
+npm run dev   # → http://localhost:5173
 ```
 
-## Deployment
-
-```bash
-git push origin main
-# Vercel auto-deploys: https://klarbill.de
-```
-
-Vercel auto-builds the Vite bundle (when present) via a build step in `vercel.json`. Marketing HTML deploys as-is.
+Two terminals, two ports during development. In production they're served from one domain.
 
 ## Auth
 
-Supabase Auth via the JS SDK loaded from CDN. Public anon key is committed to `_supabase-ready/supabase.js`; the `service_role` key is **never** committed. Full setup walkthrough in [`07-auth-setup.md`](07-auth-setup.md).
+Supabase Auth via the JS SDK. Public anon key committed (it's safe — RLS protects data). The `_supabase-ready/*.html` files we kept around were the vanilla-HTML version of auth before the SPA pivot; they remain as a reference but won't be restored. Auth pages will be re-implemented as React routes inside the SPA.
 
 Methods enabled at launch: email + password (with verification). Google OAuth is a Phase 3 nice-to-have.
 
 ## Environment Variables
 
-**Phase 1** — values pasted directly into `_supabase-ready/supabase.js`:
+**Phase 1** — committed inline in the SPA source, since they're public:
 
-```js
-SUPABASE_URL:      'https://YOUR-PROJECT-REF.supabase.co'
-SUPABASE_ANON_KEY: 'YOUR-ANON-KEY'
+```ts
+// src/app/src/auth/supabase.ts
+const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
 ```
 
-(The anon key is safe to ship to the browser — Row Level Security on the Supabase side is what protects data.)
+(Anon keys are safe to ship to the browser — Row Level Security on the Supabase side is what protects data. The `service_role` key is **never** committed.)
 
 **Phase 3 (if Stripe is added)**
 
@@ -96,7 +158,7 @@ Explicitly **not** stored:
 - Sequential invoice numbers (the user maintains their own).
 - Payment status, sent/paid timestamps, attachments.
 
-Row Level Security: each user can only read/write their own `profiles` row and their own `clients` rows.
+Row Level Security: each user can only read/write their own `profiles` row and their own `clients` rows. Type-safe Supabase client comes from `supabase gen types typescript` — wired into the SPA build later.
 
 ## Backup Domain
 

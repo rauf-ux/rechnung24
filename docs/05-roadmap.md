@@ -12,19 +12,26 @@
 
 ## Phase 1 — Generator MVP (next ~4 weeks)
 
-The core deliverable: a working invoice generator anyone can use.
+The core deliverable: a working invoice generator anyone can use, served inside a real `/app/*` SPA shell.
 
-- [ ] AGB + Datenschutzerklärung + Impressum drafts (template-tool framing, lawyer review pending)
-- [ ] Invoice generator built as a Vite + React island mounted on `invoice-new.html`
-  - Multi-step form: issuer info → recipient → line items → review
-  - Client-side PDF generation (jsPDF or pdfmake — decide during build)
-  - Client-side XRechnung XML generation (UBL or UN/CEFACT CII — decide during build)
+- [x] AGB + Datenschutzerklärung + Impressum drafts (template-tool framing, lawyer review pending)
+- [x] Vite + React + TypeScript scaffold at `src/generator/` (will be renamed `src/app/`)
+- [ ] **Build the `/app/*` SPA shell** — extend the scaffold:
+  - `react-router-dom` v6 with routes for login/signup/forgot/callback/onboarding/dashboard/invoices/clients/settings
+  - `<AppLayout>` (sidebar + topbar + outlet) and `<AuthLayout>` (centered card)
+  - `<ProtectedRoute>` wrapper that redirects to `/app/login` when no session
+  - Component primitives — decide between shadcn/ui (Tailwind) and hand-rolled to match existing visual language
+  - `vercel.json` rewrite: `/app/*` → `/app/index.html`
+- [ ] **Auth inside the SPA** — Supabase JS SDK, `useSession()` hook, login/signup/forgot/callback routes wired to real Supabase project, profile + clients tables provisioned with RLS
+- [ ] **Invoice generator inside the SPA** — extend scaffold's placeholder steps:
+  - Multi-step form: issuer → recipient → line items → review
   - §19 Kleinunternehmer toggle (zeros VAT, appends required notice)
-  - Draft auto-save to `localStorage`
-- [ ] Auth go-live (restore `_supabase-ready/*.html`, add Supabase free-tier project)
-- [ ] Minimal account model: `profiles` (issuer info), `clients` (contact list — no transactions)
-- [ ] Pricing copy refresh on `pricing.html` to reflect new model (freemium with cap, OR PAYG — pick one)
+  - Draft auto-save to localStorage
+  - Client-side PDF generation (jsPDF — Helvetica, A4 portrait)
+  - Client-side XRechnung XML generation (UBL 2.1 profile)
 - [ ] Real legal data in `impressum.html`
+- [ ] Pricing copy refresh on `pricing.html` to reflect new model (freemium with cap, OR PAYG — pick one)
+- [ ] Marketing-to-app handoff: `/welcome.html` + `/signup.html` etc. redirect to `/app/login`, `/app/signup`
 
 ## Phase 2 — Validation (~2 months after MVP ships)
 

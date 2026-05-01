@@ -14,20 +14,28 @@
 - ✅ **Brand copy:** all user-facing HTML now says "Klarbill" (Rechnung24 fully swept)
 - ✅ **Strategy locked:** Klarbill is a template tool (see `00-strategy.md`)
 - ✅ **Legal scaffolding:** `agb.html` + `datenschutz.html` drafted with template-tool framing. `impressum.html` trimmed (old contradictory privacy-policy section removed). Footer links updated site-wide. Lawyer review still pending — launch posture remains private beta.
-- ✅ **Generator scaffold:** Vite + React + TS at `src/generator/`. `npm run build` produces a 143 kB bundle (46 kB gzipped) at `<repo-root>/generator/`. Build output gitignored. Not yet wired into `invoice-new.html`.
+- ✅ **Generator scaffold:** Vite + React + TS at `src/generator/`. `npm run build` produces a 143 kB bundle (46 kB gzipped). Will be renamed `src/app/` and grown into the full `/app/*` SPA.
+- ✅ **Architecture refined:** marketing pages stay static HTML (7 files); everything behind login becomes a Vite-React SPA at `klarbill.de/app/*`. Generator scaffold is the seed of this SPA, not a one-off island. See `00-strategy.md` § Architecture decision.
 
-## Active (Phase 1 — Generator MVP)
+## Active (Phase 1 — App SPA + Generator)
 
-Ordered roughly by dependency.
+Ordered by dependency.
 
-- [ ] **`impressum.html` real legal data** — replace placeholders ("Rauf [Nachname]", "Musterstraße 1", "85290 Geisenfeld", VAT-ID `[wird ergänzt]`). Required before any public sign-up. **User's job — Claude can't supply real address data.**
-- [ ] **Invoice generator — fill in the form** — scaffold mounts and switches steps; the actual fields, jsPDF rendering, and XRechnung XML serialization are next. Order: (1) Issuer step reads from `profiles`, (2) Recipient step reads from `clients` or accepts ad hoc, (3) Line items step with §19 toggle, (4) Review step renders PDF + XML side by side with download buttons.
-- [ ] **Wire generator into `invoice-new.html`** — replace the existing static markup with `<div id="generator-root"></div><script type="module" src="/generator/generator.js"></script>`. Also add `vercel.json` so Vercel runs the build on deploy.
-- [ ] **Auth go-live** — restore `_supabase-ready/*.html` to root, create Supabase free-tier project, paste anon key into `supabase.js`. Schema: `profiles` (issuer info) + `clients` (contact list only — no transactions).
+- [ ] **Build the `/app/*` SPA shell** — extend the Vite scaffold:
+  - Rename `src/generator/` → `src/app/`
+  - Add `react-router-dom` v6 with placeholder routes for login/signup/forgot/callback/onboarding/dashboard/invoices/clients/settings
+  - `<AppLayout>` (sidebar + topbar + outlet) and `<AuthLayout>` (centered card)
+  - `<ProtectedRoute>` wrapper (redirects to `/app/login` when no session — mock until auth is wired)
+  - Decide component primitive layer: shadcn/ui (Tailwind) vs. hand-rolled (matches existing CSS-in-files style)
+  - `vercel.json` at repo root with `/app/*` → `/app/index.html` rewrite
+- [ ] **Auth inside the SPA** — Supabase JS SDK, `useSession()` hook, real Supabase project provisioned, login/signup/forgot/callback routes wired
+- [ ] **Invoice generator forms** — extend scaffold's 4-step placeholder with real fields, §19 toggle, draft auto-save, jsPDF rendering, XRechnung XML serialization (UBL 2.1)
+- [ ] **`impressum.html` real legal data** — replace placeholders. Required before any public sign-up. **User's job — Claude can't supply real address data.**
+- [ ] **Marketing → app handoff** — `signup.html`, `login.html`, `welcome.html` etc. redirect to `/app/signup`, `/app/login`, `/app/welcome` (or get retired entirely)
 - [ ] **AGB + Datenschutz lawyer review** — find a German Fachanwalt für IT-Recht, hand them `agb.html` + `datenschutz.html` + `00-strategy.md`. Until then, no public sign-up.
-- [ ] **Pricing copy refresh** — update `pricing.html` once we pick freemium-with-cap vs. PAYG / one-time. Old €9.90/€19.90 tiers no longer match positioning.
-- [ ] **`DEPLOY.md` brand cleanup** — update Supabase "App name" config + email-template strings (do at auth go-live, not before).
-- [ ] **Rename GitHub repo `rechnung24` → `klarbill`** — then update `README.md` + `docs/06-tech.md` URLs.
+- [ ] **Pricing copy refresh** — update `pricing.html` once we pick freemium-with-cap vs. PAYG / one-time.
+- [ ] **`DEPLOY.md` brand cleanup** — Supabase config + email templates (at auth go-live).
+- [ ] **Rename GitHub repo `rechnung24` → `klarbill`** — then update `README.md` URLs.
 
 ## Up Next (cosmetic / dev-experience — not blocking)
 
@@ -84,6 +92,13 @@ Daily loop:
    (or `./deploy.sh "msg"` once that helper exists)
 3. Vercel auto-deploys → klarbill.de.
 
+## Last Session Summary (2026-05-01, night — architecture refinement)
+
+- **Architecture clarified, not pivoted.** Earlier framing said "static HTML for marketing, React island only for the invoice generator, defer Next.js." That left a vague middle: where does login go? Where does the dashboard live? This session sets a clear boundary: **marketing surface (7 pages) stays static HTML; everything behind login becomes a Vite-React SPA at `/app/*`**. The `src/generator/` scaffold is the seed of this SPA — it gets renamed to `src/app/`, gets `react-router-dom`, gets an `<AppLayout>`, and grows route-by-route.
+- **Why now:** the app surface is form-heavy, state-heavy, and shares chrome (sidebar, topbar, user menu, toasts) across every page. Doing that in vanilla JS across separate HTML files multiplies boilerplate and creates session-handling bugs. One `<AppLayout>` + one `useSession()` hook collapses all of that. Marketing has none of these concerns, so it stays as it is.
+- **Updated docs:** `00-strategy.md` § Architecture decision rewritten with explicit marketing/app boundary and Vercel routing model. `06-tech.md` rewritten — two-stack architecture documented, `vercel.json` rewrite rule shown, eventual `src/app/` package layout sketched, library decisions provisional (shadcn/ui vs. hand-rolled deferred). `05-roadmap.md` Phase 1 reordered: SPA shell first, then auth inside it, then generator forms inside it. `CURRENT-TASKS.md` Active list re-prioritized: **top item is now "build the `/app/*` SPA shell"** — that's the single biggest leverage point for the next 1-2 sessions.
+- **Out of scope (still):** Next.js full migration, Astro for marketing, server-side rendering. Trigger conditions for revisiting are documented in `00-strategy.md`.
+
 ## Last Session Summary (2026-05-01, late evening)
 
 - **Legal scaffolding drafted.** Three new pages on the new template-tool framing:
@@ -96,8 +111,15 @@ Daily loop:
 
 ## Next Session — Start Here
 
-1. Open `docs/CURRENT-TASKS.md`, then `docs/00-strategy.md`.
+1. Open `docs/CURRENT-TASKS.md`, then `docs/00-strategy.md` § Architecture decision, then `docs/06-tech.md`.
 2. Run `git log --oneline -5`.
-3. **Likely starting point: fill in the invoice generator form.** The scaffold mounts and switches steps; the next chunk of work is the Issuer step. Open `src/generator/src/App.tsx` and start replacing the placeholder body with real form fields. Add a `types.ts` with `IssuerProfile`, `Recipient`, `LineItem`, `Invoice` — those will become both the form state and the inputs to the PDF/XML serializers.
+3. **Starting point: build the `/app/*` SPA shell.** Concretely:
+   - Rename `src/generator/` → `src/app/`. Update `vite.config.ts` `outDir` from `../../generator` to `../../app`.
+   - `npm install react-router-dom`
+   - Replace `App.tsx` with a `<BrowserRouter basename="/app">` containing placeholder routes (`<Routes>` for login, signup, forgot, callback, dashboard, invoices, invoices/new, clients, settings, onboarding/1..3, welcome, done)
+   - Build `<AppLayout>` (sidebar + topbar + `<Outlet/>`) and `<AuthLayout>` (centered card). Match existing visual language: Inter, #0A0A0B / #9e005d palette, 8/10/16 radii.
+   - Build `<ProtectedRoute>` that wraps app routes — for now, mock the session (`useSession` returns `{ user: null }` initially).
+   - Add `vercel.json` at repo root: `{ "buildCommand": "cd src/app && npm install && npm run build", "outputDirectory": ".", "rewrites": [{ "source": "/app/:path*", "destination": "/app/index.html" }] }`
+   - Decide upfront: **shadcn/ui or hand-rolled primitives?** Ask the user before installing Tailwind — it's an irreversible-ish choice.
 4. Do the work.
 5. Before closing: update **Last Session Summary** + add a `CHANGELOG.md` entry.

@@ -91,13 +91,45 @@ This buys runway for the first ~1,000 users at zero marginal cost.
 
 ## Architecture decision
 
-**Keep the existing static HTML for marketing pages.** Marketing surfaces (`index`, `pricing`, `features`, `faq`, `impressum`) need no SSR, no auth, no state. They're shipped and good. Don't churn them.
+The site has two surfaces with very different ergonomic demands. We treat them differently rather than forcing a single stack on both.
 
-**Build the invoice generator as a single React island in `invoice-new.html`.** The generator is a multi-step form with non-trivial state — the only place where React's ergonomics earn their keep. Use Vite to bundle a single `InvoiceGenerator` component into a script tag mounted on `invoice-new.html`. Marketing pages stay vanilla.
+### Marketing surface — stays static HTML
 
-**Auth is vanilla JS + Supabase JS SDK.** The `_supabase-ready/{signup,login,forgot,callback}.html` files are already wired — restore them when the AGB and impressum are ready.
+Seven public pages have no auth, no state, no dynamic data: `index.html`, `pricing.html`, `features.html`, `faq.html`, `impressum.html`, `agb.html`, `datenschutz.html`. They are already shipped, fast, SEO-friendly, and cheap to maintain at this size. **Do not migrate them.** When a shared element (nav, footer) needs an update across all seven, use a one-off `sed`/`perl` pass — that has been the workflow since the brand sweep, and it stays that way.
 
-**Defer Next.js migration** until at least one of: 100+ active users, the marketing surface needs SEO-driven dynamic content (blog), or team accounts demand server-side session management. None of these are true now.
+### App surface — becomes a Vite-React SPA at `/app/*`
+
+Everything behind login is a single-page React application served from `klarbill.de/app/*`:
+
+```
+/app/login            /app/dashboard
+/app/signup           /app/invoices
+/app/forgot           /app/invoices/new      ← invoice generator lives here
+/app/callback         /app/clients
+/app/onboarding/1..3  /app/settings
+/app/welcome
+/app/done
+```
+
+Why a SPA, not a continued island-on-static-HTML approach: the app surface is form-heavy, state-heavy, and shares layout chrome (sidebar, top-bar, user menu, toasts) across every page. Doing this in vanilla JS across separate HTML files multiplies boilerplate and creates dozens of subtle session-handling bugs. React with a single `<AppLayout>` and one `useSession()` hook collapses all of that.
+
+The `src/generator/` Vite scaffold we built is **the seed of this SPA**, not a one-off island. We extend it: add `react-router-dom`, add an `<AppLayout>`, add per-route components, and let it grow into the full `/app/*` shell. The invoice generator becomes one route inside it (`/app/invoices/new`).
+
+### Boundary at the routing layer
+
+Vercel serves both surfaces from one repo:
+
+- `klarbill.de/`, `klarbill.de/pricing.html`, `klarbill.de/agb.html` etc. — served as static HTML from repo root.
+- `klarbill.de/app/*` — Vercel rewrites everything to `/app/index.html`, the SPA's HTML shell. React Router takes over from there.
+- `klarbill.de/welcome.html` — the static marketing landing page deep-links to `/app/signup` or `/app/login` for auth.
+
+A single `vercel.json` at repo root encodes this rewrite. Build step: `cd src/generator && npm install && npm run build` (the project will eventually be renamed `src/app/`, but the path stays internal).
+
+### What stays out of scope
+
+- **Next.js.** Defer until at least one of: marketing needs SEO-driven dynamic content (blog, programmatic pages), 100+ active users justifies SSR for app perf, or team accounts demand server-side session middleware. None of these are true at Phase 1.
+- **Astro / 11ty / static-site generator for marketing.** The 7 marketing pages are stable enough that a generator adds tooling complexity without proportional payoff. Revisit if the page count exceeds ~15.
+- **Server-side rendering for the app.** Client-side rendering is fine — the app is gated behind auth, so SEO is irrelevant; first paint perf is acceptable.
 
 ## Pricing model (provisional)
 
