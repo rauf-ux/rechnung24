@@ -334,7 +334,7 @@
     .cta-section:hover::after { opacity: 1; }
     .cta-section > * { position: relative; }
     .cta-section h2 { font-size: 48px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 16px; }
-    /* Countdown — animates 60 → 0 once when CTA scrolls into view */
+    /* Countdown — looping 1 → 60 stopwatch animation, restarts every ~3s while CTA is in viewport */
     .cta-section .countdown {
       display: inline-block;
       font-variant-numeric: tabular-nums;
@@ -344,7 +344,7 @@
       transition: color 0.25s ease, transform 0.25s ease;
     }
     .cta-section .countdown.is-running { color: #ffb3d8; }
-    .cta-section .countdown.is-zero {
+    .cta-section .countdown.is-target {
       color: #ff4d9e;
       transform: scale(1.15);
     }
@@ -749,43 +749,54 @@
         cta.style.setProperty('--mouse-y', y + '%');
       });
 
-      // (2) "60 Sekunden" countdown — runs once when CTA enters viewport.
-      //     Visualizes "60 seconds is short" by counting down 60→0 in ~2s.
-      //     Uses tabular-nums to avoid layout shift between digit-widths.
+      // (2) "60 Sekunden" stopwatch — loops 1 → 60 every ~3 seconds while CTA is in viewport.
+      //     Visualizes how short 60 seconds really is. Uses tabular-nums to prevent layout shift.
+      //     Animation auto-pauses when CTA scrolls out of view (saves CPU + respects user attention).
       const num = cta.querySelector('.countdown');
       if (num && 'IntersectionObserver' in window) {
-        let started = false;
+        let isVisible = false;
+        let timeoutId = null;
+
+        const runCycle = () => {
+          if (!isVisible) return;
+          let current = 0;
+          num.classList.remove('is-target');
+          num.classList.add('is-running');
+
+          const tick = () => {
+            if (!isVisible) return;
+            current++;
+            num.textContent = current;
+
+            if (current >= 60) {
+              num.classList.remove('is-running');
+              num.classList.add('is-target');
+              // Pause at 60 (impact moment), then restart from 1.
+              timeoutId = setTimeout(runCycle, 1100);
+              return;
+            }
+            timeoutId = setTimeout(tick, 32); // 60 × 32ms ≈ 2s up-count
+          };
+          timeoutId = setTimeout(tick, 32);
+        };
+
         const observer = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
-            if (!entry.isIntersecting || started) return;
-            started = true;
-            observer.disconnect();
+            const wasVisible = isVisible;
+            isVisible = entry.isIntersecting;
 
-            // Initial pause: let the eye read "in 60 Sekunden" once.
-            setTimeout(() => {
-              num.classList.add('is-running');
-              let current = 60;
-              const tickRate = 32; // ms per decrement → 60×32 ≈ 2s
-
-              const step = () => {
-                current--;
-                num.textContent = current;
-                if (current === 0) {
-                  num.classList.remove('is-running');
-                  num.classList.add('is-zero');
-                  // Settle back to "60" after a beat — leaves the slogan readable.
-                  setTimeout(() => {
-                    num.classList.remove('is-zero');
-                    num.textContent = '60';
-                  }, 1200);
-                  return;
-                }
-                setTimeout(step, tickRate);
-              };
-              setTimeout(step, tickRate);
-            }, 1400);
+            if (isVisible && !wasVisible) {
+              // Entered viewport — start the loop after a small reading pause.
+              timeoutId = setTimeout(runCycle, 600);
+            } else if (!isVisible && wasVisible) {
+              // Left viewport — pause animation, settle to '60'.
+              clearTimeout(timeoutId);
+              num.classList.remove('is-running', 'is-target');
+              num.textContent = '60';
+            }
           });
-        }, { threshold: 0.4 });
+        }, { threshold: 0.3 });
+
         observer.observe(cta);
       }
     })();
